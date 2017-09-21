@@ -3,9 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-#my outputs
-*.pdf
-*.txt
+#ignore everything
+*
+#except the python scripts I want to include
+*.py
 
 # C extensions
 *.so
