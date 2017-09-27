@@ -1,7 +1,7 @@
 import numpy as np
 from glob import glob
 import os
-import sys.argv
+import sys
 
 import try_lightcurve as tlc
 

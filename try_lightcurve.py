@@ -16,7 +16,11 @@ import lightcurve as lc
 def make_lightcurve(target_dir, stepsize, plotall=True):
     """
     """
+    print ""
+    print "==============="
+    print "stepsize: ", stepsize
     print "plotall=", plotall
+    print "target_dir: ", target_dir
     wlim= [900, 3200] #3200 is the default max from what I could gather. The geocoronal emission lines are automatically excluded from the lightcurve
     band= '*' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available
 
@@ -28,11 +32,12 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
 
     negative_flux_files= []
     negative_means= []
-    fig = plt.figure(figsize= (20,9))
-    ax = fig.add_subplot(1,1,1)
+    if plotall:
+        fig = plt.figure(figsize= (20,9))
+        ax = fig.add_subplot(1,1,1)
 
 
-
+    print os.getcwd()
     for item in glob(target_dir + '*corrtag' + band + '.fits'):
         astrotable, astrometa = lc.cos.extract(item, step=stepsize, wlim= wlim)
         #print 'astrometa: ', astrometa
@@ -55,7 +60,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
 
 
     pre_flux = np.copy(flux_table)
-    flux_array = np.copy( flux_table/np.nanmean(flux_table)-1) #normalize flux array
+    flux_array = np.copy( flux_table/np.nanmean(flux_table)) #normalize flux array
 
     print "np.nanmean(flux_array)" , np.nanmean(flux_array)
     print "np.nanmean(flux_table: " ,np.nanmean(flux_table)
@@ -66,11 +71,11 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
     print "mjd value for that: ", mjd_array[np.argmax(flux_array)]
     print "top 5 flux values: ", np.sort(flux_array)[-5:]
 
-    print 'mjd_array.shape: ', mjd_array.shape
-    print 'gross_array.shape: ', gross_array.shape
-    print 'flux_array.shape: ', flux_array.shape
+    #print 'mjd_array.shape: ', mjd_array.shape
+    #print 'gross_array.shape: ', gross_array.shape
+    #print 'flux_array.shape: ', flux_array.shape
 
-    print "mjd_diff: ", mjd_array - np.roll(mjd_array,1)
+    #print "mjd_diff: ", mjd_array - np.roll(mjd_array,1)
     if plotall:
         fig = plt.figure(figsize= (20,9))
         ax = fig.add_subplot(1,1,1)
@@ -113,7 +118,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
         if not os.path.exists(dest_dir):
             os.makedirs(dest_dir)
         os.chdir(dest_dir)
-    
+    print os.getcwd()
     textheader= 'mjd\tgross\tflux'
     #textcomment= 'step = ' + str(stepsize)
     out_array= np.append([mjd_array], [gross_array], axis = 0)
@@ -121,7 +126,11 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
     print out_array.shape
     out_array= out_array.T
     print out_array.shape
+    print "writing textfile"
     np.savetxt(target_dir[:-1]+'_lightcurve_step' + str(stepsize)+'_wlim'+ str(wlim[0])+',' + str(wlim[1])+'.txt', out_array, delimiter = '\t', header = textheader)
+    if __name__ != '__main__':
+        os.chdir('../')
+    print os.getcwd()
     return "done"
 
 #Check if this is being executed alone
