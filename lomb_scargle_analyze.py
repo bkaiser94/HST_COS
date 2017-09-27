@@ -24,12 +24,15 @@ times = (times- times[0])*24.*3600. #rezeroing the time of observation.
 #times= times * u.day
 #times= times.to(u.s)
 #print times
-period_range = np.array([10,20]) #hours
+#period_range = np.array([10,20]) #hours
+period_range= [100, 1400] #seconds
 #period_range= period_range *3600. #seconds
-frequency_range= np.linspace(1./period_range[1],1./period_range[0], 1000)
-
-frequency, power = LombScargle(times, all_array['flux']).autopower()
-#power = LombScargle(times, all_array['flux']).power(frequency_range)
+frequency_range= np.linspace(1./period_range[1],1./period_range[0], 100000)
+frequency = frequency_range
+print "max freq: " , np.nanmax(frequency)
+print "freq min: ", np.nanmin(frequency)
+#frequency, power = LombScargle(times, all_array['flux']).autopower()
+power = LombScargle(times, all_array['flux']).power(frequency_range)
 
 
 plt.figure(figsize= (20,9))
