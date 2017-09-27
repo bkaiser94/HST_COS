@@ -6,7 +6,7 @@ __pycache__/
 #ignore everything
 *
 #except the python scripts I want to include
-*.py
+!*.py
 
 # C extensions
 *.so
