@@ -177,6 +177,6 @@ ax2.set_title(lcfile + ' Period fold '+ str(period) + ' ' + time_string)
 
 
 fig.tight_layout()
-plt.show()
+#plt.show()
 
-#fig.savefig(dest_dir+ target_dir + '_dual_plot_fold_'+ sys.argv[3] + sys.argv[4]+'_step' + str(stepsize)+'.pdf', bbox_inches = 'tight')
+fig.savefig(dest_dir+ target_dir + '_dual_plot_fold_'+ sys.argv[3] + sys.argv[4]+'_step' + str(stepsize)+'.pdf', bbox_inches = 'tight')
