@@ -8,11 +8,14 @@ import sys
 
 from calcos import calcos
 from costools import timefilter
-import lightcurve as lc
+#import lightcurve as lc
+import local_lightcurve as lc #I have created a second directory within here that I could edit the 
 
 
 #target_dir = sys.argv[1] + '/'
 #stepsize = int(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
+second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
+
 def make_lightcurve(target_dir, stepsize, plotall=True):
     """
     """
@@ -21,7 +24,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
     print "stepsize: ", stepsize
     print "plotall=", plotall
     print "target_dir: ", target_dir
-    wlim= [900, 3200] #3200 is the default max from what I could gather. The geocoronal emission lines are automatically excluded from the lightcurve
+    wlim= [1130, 1900] #3200 is the default max from what I could gather as is 915. The geocoronal emission lines are automatically excluded from the lightcurve
     band= '*' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available
 
     mjd_array = np.array([])
@@ -45,6 +48,12 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
         mjd_array= np.append(mjd_array, astrotable['mjd'])
         gross_array= np.append(gross_array, astrotable['gross'])
         flux_table= np.append(flux_table, astrotable['flux'])
+        print "first mjd: " , astrotable['mjd'][0]
+        #print "astrotable['gross']: " , astrotable['gross']
+        #print "astrotable['background']: ", astrotable['background']
+        #count_diff= astrotable['gross']-astrotable['background']
+        #print "difference: ", count_diff
+        #print "normed counts: ", np.float_(count_diff)/np.nanmean(count_diff)
         print "file: ", item
         print "np.nanmean(flux):", np.nanmean(astrotable['flux'])
         print '-------------'
@@ -60,7 +69,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
 
 
     pre_flux = np.copy(flux_table)
-    flux_array = np.copy( flux_table/np.nanmean(flux_table)) #normalize flux array
+    flux_array = np.copy( flux_table/np.nanmean(flux_table)-1.) #normalize flux array around zero
 
     print "np.nanmean(flux_array)" , np.nanmean(flux_array)
     print "np.nanmean(flux_table: " ,np.nanmean(flux_table)
@@ -119,10 +128,12 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
             os.makedirs(dest_dir)
         os.chdir(dest_dir)
     print os.getcwd()
-    textheader= 'mjd\tgross\tflux'
+    time_sec= (mjd_array- mjd_array[0])*second_per_mjd
+    textheader= 'mjd\tgross\tflux\ttime(s)'
     #textcomment= 'step = ' + str(stepsize)
     out_array= np.append([mjd_array], [gross_array], axis = 0)
     out_array = np.append(out_array, [flux_array], axis = 0)
+    out_array = np.append(out_array, [time_sec], axis=0)
     print out_array.shape
     out_array= out_array.T
     print out_array.shape
@@ -136,7 +147,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
 #Check if this is being executed alone
 if __name__ == '__main__':
     target_dir = sys.argv[1] + '/'
-    stepsize = int(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
+    stepsize = float(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
     outstring = make_lightcurve(target_dir, stepsize)
 
     

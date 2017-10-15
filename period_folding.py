@@ -17,15 +17,16 @@ import lightcurve as lc
 inputfile= sys.argv[1]
 period= float(sys.argv[2])
 unit_arg = sys.argv[3]
+second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 
 if unit_arg.startswith('s'):
     print "period in seconds"
-    time_converter = 24.*3600
+    time_converter = second_per_mjd
     time_string = 's'
     
 elif unit_arg.startswith('h'):
     print "period in hours"
-    time_converter= 24.
+    time_converter= second_per_mjd/3600.
     time_string = 'hrs'
 
 elif unit_arg.startswith('d'):
@@ -35,7 +36,7 @@ elif unit_arg.startswith('d'):
 
 elif unit_arg.startswith('m'):
     print 'period in minutes'
-    time_converter = 24*60.
+    time_converter = second_per_mjd/60.
     time_string = 'min'
     
 
