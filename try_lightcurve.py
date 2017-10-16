@@ -71,7 +71,7 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
 
     pre_flux = np.copy(flux_table)
     flux_array = np.copy( flux_table/np.nanmean(flux_table)-1.) #normalize flux array around zero #This was the mean all norming method
-    flux_array = np.copy(flux_table)
+    #flux_array = np.copy(flux_table) #this should be uncommented for the individual fits normalization
 
     print "np.nanmean(flux_array)" , np.nanmean(flux_array)
     print "np.nanmean(flux_table: " ,np.nanmean(flux_table)
