@@ -16,7 +16,7 @@ import local_lightcurve as lc #I have created a second directory within here tha
 #stepsize = int(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
 second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 
-def make_lightcurve(target_dir, stepsize, plotall=True):
+def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     """
     """
     print ""
@@ -24,7 +24,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
     print "stepsize: ", stepsize
     print "plotall=", plotall
     print "target_dir: ", target_dir
-    wlim= [1130, 1900] #3200 is the default max from what I could gather as is 915. The geocoronal emission lines are automatically excluded from the lightcurve
+    #wlim= [1130, 1900] #3200 is the default max from what I could gather as is 915. The geocoronal emission lines are automatically excluded from the lightcurve
     band= '*' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available
 
     mjd_array = np.array([])
@@ -47,7 +47,8 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
         
         mjd_array= np.append(mjd_array, astrotable['mjd'])
         gross_array= np.append(gross_array, astrotable['gross'])
-        flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmedian(astrotable['flux'])-1))
+        flux_table= np.append(flux_table, astrotable["flux"])
+        #flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmedian(astrotable['flux'])-1)) #for individual fits file median normalization
         print "first mjd: " , astrotable['mjd'][0]
         #print "astrotable['gross']: " , astrotable['gross']
         #print "astrotable['background']: ", astrotable['background']
@@ -69,7 +70,7 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
 
 
     pre_flux = np.copy(flux_table)
-    #flux_array = np.copy( flux_table/np.nanmean(flux_table)-1.) #normalize flux array around zero #This was the mean all norming method
+    flux_array = np.copy( flux_table/np.nanmean(flux_table)-1.) #normalize flux array around zero #This was the mean all norming method
     flux_array = np.copy(flux_table)
 
     print "np.nanmean(flux_array)" , np.nanmean(flux_array)
@@ -149,7 +150,8 @@ def make_lightcurve(target_dir, stepsize, plotall=True):
 if __name__ == '__main__':
     target_dir = sys.argv[1] + '/'
     stepsize = float(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
-    outstring = make_lightcurve(target_dir, stepsize)
+    wlim= [1130, 1900] 
+    outstring = make_lightcurve(target_dir, stepsize, wlim)
 
     
     #plt.plot(astrotable['mjd'], astrotable['gross'])
