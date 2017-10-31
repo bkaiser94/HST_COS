@@ -5,11 +5,12 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from astropy.io import fits
 import sys
+import config
 
 #from calcos import calcos
 from costools import timefilter
 import local_lightcurve as lc
-from plot_all_lightcurve import gain_change_list_mjd, lpos_list
+#from plot_all_lightcurve import gain_change_list_mjd, lpos_list
 
 
 
@@ -17,25 +18,22 @@ from plot_all_lightcurve import gain_change_list_mjd, lpos_list
 #def make_dual_plots(target_dir, stepsize, period, unit_arg, wave_limits= [1130,1900]):
 def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     wave_min= wave_limits[0]
-    lyman = [1208, 1225]
-    oxygen= [1295, 1312] #airglow wavelengths to be filtered according to lightcurve
+    #lyman = [1208, 1225]
+    #oxygen= [1295, 1312] #airglow wavelengths to be filtered according to lightcurve
     wave_max= wave_limits[1]
     lcbase= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+str(wave_min)+',' + str(wave_max)+'*'
     lcfile= glob(lcbase)[0]
     dest_dir = 'dual_plots/'
     if not os.path.exists(dest_dir):
                 os.makedirs(dest_dir)
-    #wave_min= 1130
-    #lyman = [1208, 1225]
-    #oxygen= [1295, 1312] #airglow wavelengths to be filtered according to lightcurve
-    #wave_max= 1900
+    
 
     for dataset in glob(target_dir+ '/*x1dsum.fits'):
         hdu = fits.open(dataset)
         print dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME']    
 
     fig = plt.figure(figsize=(20,9))
-    silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
+    #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
     ax1 = fig.add_subplot(2,1,1)
 
     def remove_range(wave_array, other_array, bound_list):
@@ -76,33 +74,9 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         upper_mask= np.where(wavelengths < wave_max)
         wavelengths= np.copy(wavelengths[upper_mask])
         fluxes= np.copy(fluxes[upper_mask])
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, lyman)
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, oxygen)
-        #unmasked= np.where(wavelengths < lyman[0])
-        #wavelengths1= wavelengths[unmasked]
-        #print wavelengths1.shape
-        #print "fluxes: ",fluxes
-        #fluxes1= fluxes[unmasked]
-        #newmask= np.where(wavelengths > lyman[1])
-        #wavelengths2= wavelengths[newmask]
-        #print wavelengths2.shape
-        #fluxes2= fluxes[newmask]
-        #midmask= np.where(wavelengths2 < oxygen[0])
-        #wavelengths2= wavelengths2[midmask]
-        #print wavelengths2.shape
-        #fluxes2= fluxes2[midmask]
-        #lastmask= np.where(wavelengths > oxygen[1])
-        #wavelengths3= wavelengths[lastmask]
-        #print wavelengths3.shape
-        #fluxes3= fluxes[lastmask]
-        #lastermask= np.where(wavelengths3 < wave_max)
-        #wavelengths3= wavelengths3[lastermask]
-        #fluxes3= fluxes3[lastermask]
-        ##now recombine all of those masked shenanigans
-        #wavelengths= np.append(wavelengths1, wavelengths2)
-        #wavelengths= np.append(wavelengths, wavelengths3)
-        #fluxes= np.append(fluxes1, fluxes2)
-        #fluxes = np.append(fluxes, fluxes3)
+        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
+        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
+        
         print "fluxes.shape: ", fluxes.shape
         print "wavelengths.shape" , wavelengths.shape
         
@@ -188,11 +162,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     ax2.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
     min_time= np.min(times)
     max_time = np.max(times)
-    for gain_change in gain_change_list_mjd:
+    for gain_change in config.gain_change_list_mjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((gain_change > min_time) & (gain_change< max_time)):
             ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
-    for lpos in lpos_list:
+    for lpos in config.lpos_list:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((lpos > min_time) & (lpos < max_time)):
             ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
