@@ -4,12 +4,14 @@ from glob import glob
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from astropy.io import fits
+from astropy.time import Time
 import sys
 import config
 
 #from calcos import calcos
 from costools import timefilter
 import local_lightcurve as lc
+
 #from plot_all_lightcurve import gain_change_list_mjd, lpos_list
 
 
@@ -111,7 +113,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         counter += 1
         #print "sum fluxes: ", np.sum(fluxes)
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
-    for this_line in silicon_lines:
+    for this_line in config.silicon_lines:
         ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
     print flux_all.shape
     flux_all= flux_all[1:, :] #remove the first row of zeros
@@ -162,7 +164,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     ax2.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
     min_time= np.min(times)
     max_time = np.max(times)
-    for gain_change in config.gain_change_list_mjd:
+    gain_change_list_mjd = Time(config.gain_change_list, scale= 'utc').mjd
+    for gain_change in gain_change_list_mjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((gain_change > min_time) & (gain_change< max_time)):
             ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)

@@ -17,11 +17,12 @@ import local_lightcurve as lc
 
 #lpos_list= [56132, 57063] #mjd dates of position changes
 #gain_change_list=Time( ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09'], scale='utc')
-print config.gain_change_list_mjd
+gain_change_list_mjd = Time(gain_change_list, scale='utc').mjd
+print gain_change_list_mjd
 def plot_events(times):
     min_time= np.min(times)
     max_time = np.max(times)
-    for gain_change in config.gain_change_list_mjd:
+    for gain_change in gain_change_list_mjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((gain_change > min_time) & (gain_change< max_time)):
             plt.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
