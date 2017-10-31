@@ -29,6 +29,9 @@ def expand_refname(refname):
         try:
             reffile = os.path.join(os.environ[refpath], reffile)
         except KeyError:
+            refpath, reffile = refname.split('$')
+            refpath = 'HST_COS_ref_files/'
+            reffile= refpath+reffile
             pass
 
     else:
