@@ -86,6 +86,7 @@ for dataset in glob(target_dir+ '/*x1dsum.fits'):
     fluxes= np.copy(fluxes[upper_mask])
     wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
     wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
+    wavelengths, fluxes = remove_range(wavelengths, fluxes, config.nitrogen_mask)
     #fluxes= zero_mask(wavelengths, fluxes, config.lyman_mask)
     #fluxes= zero_mask(wavelengths, fluxes, config.oxygen_mask)
     
@@ -202,7 +203,7 @@ if num_segs > 42:
     fig.savefig(dest_dir+target_dir+ 'segmented_spectra_wlim'+ str(wave_limits[0])+','+str(wave_limits[1]) +'_fig'+str(figsaves)+ '.pdf')
     figsaves +=1
 else:
-    print "Currently not configured to handle fewer than 42 segments"
+    print "Currently not well-configured to handle fewer than 42 segments"
     print "That corresponds to " + str(max_points_per_window * 42) + ' data points in the set.'
     fig = plt.figure(figsize=(20,num_segs* vertical_dimension))
     for segment in range(0,num_segs):

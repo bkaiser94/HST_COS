@@ -78,6 +78,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         fluxes= np.copy(fluxes[upper_mask])
         wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
         wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
+        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.nitrogen_mask)
         
         print "fluxes.shape: ", fluxes.shape
         print "wavelengths.shape" , wavelengths.shape

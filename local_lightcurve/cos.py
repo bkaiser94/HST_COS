@@ -336,15 +336,37 @@ def extract_index(hdu, x_start, x_end,
     """
 
     if filter_airglow:
-        lyman = (1208, 1225)
+        #lyman = (1208, 1225) #original value...I think. double-check the package lightcurve if in doubt.
         #oxygen = (1298, 1312) #This is the original wavelength range to mask
+        lyman = (1206, 1226)  #my altered values
         oxygen = (1295, 1312) #this is my version
+        nitrogen= (1195, 1205) #this is a value I added
         print ("OXYGEN MASKING CHANGED FROM DEFAULT!")
         print ("Current oxygen mask: ", oxygen)
+        print ("Nitrogen-I mask: ", nitrogen)
+        print ('Lyman Mask changed from default!')
+        print ("lyman mask: ", lyman)
     else:
         lyman = (w_end, w_start)
         oxygen = (w_end, w_start)
+        nitrogen = (w_end, w_start)
 
+    #data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
+                          #(hdu[1].data['XCORR'] < x_end) &
+
+                          #(hdu[1].data['YCORR'] >= y_start) &
+                          #(hdu[1].data['YCORR'] < y_end) &
+
+                          #np.logical_not(hdu[1].data['DQ'] & sdqflags) &
+
+                          #((hdu[1].data['WAVELENGTH'] > w_start) &
+                           #(hdu[1].data['WAVELENGTH'] < w_end)) &
+
+                          #((hdu[1].data['WAVELENGTH'] > lyman[1])|
+                           #(hdu[1].data['WAVELENGTH'] < lyman[0])) &
+                          #((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
+                           #(hdu[1].data['WAVELENGTH'] < oxygen[0]))
+                          #)[0] #original version of this
     data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
                           (hdu[1].data['XCORR'] < x_end) &
 
@@ -359,7 +381,9 @@ def extract_index(hdu, x_start, x_end,
                           ((hdu[1].data['WAVELENGTH'] > lyman[1])|
                            (hdu[1].data['WAVELENGTH'] < lyman[0])) &
                           ((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
-                           (hdu[1].data['WAVELENGTH'] < oxygen[0]))
+                           (hdu[1].data['WAVELENGTH'] < oxygen[0])) &
+                          ((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
+                           (hdu[1].data['WAVELENGTH'] < nitrogen[0]))
                           )[0]
 
     return data_index
