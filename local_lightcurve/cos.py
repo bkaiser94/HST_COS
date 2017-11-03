@@ -135,9 +135,9 @@ def extract(filename, **kwargs):
     start = 0
 
     for segment, hdu in six.iteritems(input_hdus):
-        start = max(start, hdu[1].data['TIME'].min())
-        end = max(end, hdu[1].data['TIME'].max())
-        exptime = max(exptime, hdu[1].header['EXPTIME'])
+        start = max(start, hdu[1].data['TIME'].min()) #mjd-dependent point
+        end = max(end, hdu[1].data['TIME'].max()) #mjd-dependent point (the arrival time within the exposure will vary between standards)
+        exptime = max(exptime, hdu[1].header['EXPTIME']) #possibly something to cut... although exposure time would matter less I suppose
 
     if end > exptime:
         print("WARNING: data times go to {}, beyond exptime: {}".format(end, exptime))

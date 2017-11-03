@@ -177,6 +177,9 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     #ax2.set_xlabel("Time ("+ time_string + ")")
     ax2.set_xlabel("Time (MJD)")
     ax2.set_ylabel("Flux (normed and zeroed)")
+    standard_deviation= np.std(fluxes)
+    plt.text(0.1, 0.9, "standard deviation: " + str(standard_deviation), transform = ax2.transAxes, bbox= dict(facecolor='blue', alpha = 0.2))
+    
     #ax2.set_xlim(0, period)
     #ax2.set_title(lcfile + ' Period fold '+ str(period) + ' ' + time_string)
     ax2.set_title(lcfile)

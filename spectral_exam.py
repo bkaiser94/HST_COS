@@ -30,6 +30,12 @@ for dataset in glob(target_dir+ '/*x1dsum.fits'):
     hdu = fits.open(dataset)
     print dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME']    
 
+def plot_element_lines(wavelength_array, axis_variable):
+    for this_line in config.silicon_lines:
+        if ((this_line > np.nanmin(wavelength_array)) & (this_line< np.nanmax(wavelength_array))):
+            axis_variable.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.9)
+
+
 def remove_range(wave_array, other_array, bound_list):
     """
     Removes wavelengths and flux values from the array that fall in the range specified by bound_list
@@ -46,9 +52,16 @@ def remove_range(wave_array, other_array, bound_list):
     merge_other= np.append(low_other, high_other)
     return merge_waves, merge_other
 
+def zero_mask(wave_array, other_array, bound_list):
+    lower_bound = bound_list[0]
+    upper_bound = bound_list[1]
+    masking = np.where((wave_array > lower_bound) & (wave_array < upper_bound))
+    other_array[masking]= 0.
+    return other_array
+
 counter= 0
-vertical_dimension = 5
-max_points_per_window= 201
+vertical_dimension = 6
+max_points_per_window= 501
 
 for dataset in glob(target_dir+ '/*x1dsum.fits'):
     hdu = fits.open(dataset)
@@ -71,8 +84,10 @@ for dataset in glob(target_dir+ '/*x1dsum.fits'):
     upper_mask= np.where(wavelengths < wave_max)
     wavelengths= np.copy(wavelengths[upper_mask])
     fluxes= np.copy(fluxes[upper_mask])
-    #wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
-    #wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
+    wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
+    wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
+    #fluxes= zero_mask(wavelengths, fluxes, config.lyman_mask)
+    #fluxes= zero_mask(wavelengths, fluxes, config.oxygen_mask)
     
     print "fluxes.shape: ", fluxes.shape
     print "wavelengths.shape" , wavelengths.shape
@@ -81,6 +96,9 @@ for dataset in glob(target_dir+ '/*x1dsum.fits'):
         flux_all= np.array([np.zeros(fluxes.shape)])
         print "flux_all.shape: ", flux_all.shape
         plot_waves = wavelengths
+    print "wavelengths differences", plot_waves[:5] - wavelengths[:5]
+    print plot_waves[:5]
+    print wavelengths[:5]
     try:
         flux_all = np.append(flux_all, [fluxes], axis=0)
         print flux_all.shape
@@ -121,6 +139,16 @@ plus_lambda = plus_lambda + plot_waves[-1]
 print "plus_lambda.shape:", plus_lambda.shape
 plot_waves= np.append(plot_waves, plus_lambda) #tack on the necessary wavelength values on the far end of the spectrum to get it farther without having to deal with all of the associated noise.
 #now reshape both plot_waves and flux_normed to be multidimensional arrays that we can iterate through.
+#output a long version of the spectrum as well
+longfig= plt.figure(figsize= (200, 12))
+longax= longfig.add_subplot(1,1,1)
+longax.plot(plot_waves, flux_normed, color= 'k')
+plot_element_lines(plot_waves, longax)
+plt.grid()
+longax.set_ylabel('Flux (normed)')
+longax.set_xlabel('Wavelength $(\AA)$')
+longfig.savefig(dest_dir+target_dir+'long_spectrum_'+ str(wave_limits[0])+','+str(wave_limits[1]) + '.pdf')
+
 plot_waves= plot_waves.reshape(num_segs, max_points_per_window)
 flux_normed= flux_normed.reshape(num_segs, max_points_per_window)
 
@@ -136,13 +164,16 @@ if num_segs > 42:
             ax = fig.add_subplot(new_max,1,segment+1)
             waves_for_plot= plot_waves[segment+offset]
             flux_for_plot = flux_normed[segment+offset]
-            for this_line in config.silicon_lines:
-                if ((this_line > np.nanmin(waves_for_plot)) & (this_line< np.nanmax(waves_for_plot))):
-                    ax.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
+            plot_element_lines(waves_for_plot, ax)
+            #for this_line in config.silicon_lines:
+                #if ((this_line > np.nanmin(waves_for_plot)) & (this_line< np.nanmax(waves_for_plot))):
+                    #ax.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
             #print flux_all.shape
-            ax.plot(waves_for_plot, flux_for_plot)
+            ax.plot(waves_for_plot, flux_for_plot, color = 'k')
             ax.set_ylabel('Flux (normed)')
             ax.set_xlabel('Wavelength $(\AA)$')
+            ax.set_xlim([np.nanmin(waves_for_plot), np.nanmax(waves_for_plot)])
+
 
         fig.tight_layout()
         plt.title(target_dir)
@@ -160,9 +191,11 @@ if num_segs > 42:
             if ((this_line > np.nanmin(waves_for_plot)) & (this_line< np.nanmax(waves_for_plot))):
                 ax.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
         #print flux_all.shape
-        ax.plot(waves_for_plot, flux_for_plot)
+        ax.plot(waves_for_plot, flux_for_plot, color ='k')
         ax.set_ylabel('Flux (normed)')
         ax.set_xlabel('Wavelength $(\AA)$')
+        ax.set_xlim([np.nanmin(waves_for_plot), np.nanmax(waves_for_plot)])
+        
 
     fig.tight_layout()
     plt.title(target_dir)
@@ -180,9 +213,11 @@ else:
             if ((this_line > np.nanmin(waves_for_plot)) & (this_line< np.nanmax(waves_for_plot))):
                 ax.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
     #print flux_all.shape
-        ax.plot(waves_for_plot, flux_for_plot)
+        ax.plot(waves_for_plot, flux_for_plot, color ='k')
         ax.set_ylabel('Flux (normed)')
         ax.set_xlabel('Wavelength $(\AA)$')
+        ax.set_xlim([np.nanmin(waves_for_plot), np.nanmax(waves_for_plot)])
+
 
     fig.tight_layout()
     plt.title(target_dir)
