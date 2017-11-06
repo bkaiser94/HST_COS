@@ -153,7 +153,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
 
     all_array = np.genfromtxt(lcfile, names=True)
     #times= Time(all_array['mjd'], format='mjd')
-    times= np.copy(all_array['mjd'])
+    #times= np.copy(all_array['mjd'])
+    times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
     fluxes= np.copy(all_array['flux'])
 
     #times= (times - times[0]) *time_converter
@@ -165,18 +166,30 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     ax2.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
     min_time= np.min(times)
     max_time = np.max(times)
-    gain_change_list_mjd = Time(config.gain_change_list, scale= 'utc').mjd
-    for gain_change in gain_change_list_mjd:
+    #gain_change_list_mjd = Time(config.gain_change_list, scale= 'utc').mjd
+    #for gain_change in gain_change_list_mjd:
+        ##if ((fppos > times.min) & (fppos < times.max)):
+        #if ((gain_change > min_time) & (gain_change< max_time)):
+            #ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
+    #for lpos in config.lpos_list:
+        ##if ((fppos > times.min) & (fppos < times.max)):
+        #if ((lpos > min_time) & (lpos < max_time)):
+            #ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
+    gain_change_list_bmjd = Time(config.gain_change_list, scale= 'utc')
+    gain_change_list_bmjd= gain_change_list_bmjd.tdb.mjd
+    gain_change_list_bmjd
+    for gain_change in gain_change_list_bmjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((gain_change > min_time) & (gain_change< max_time)):
             ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
-    for lpos in config.lpos_list:
+    for lpos in Time(config.lpos_list, format = 'mjd', scale = 'utc').tdb.mjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((lpos > min_time) & (lpos < max_time)):
             ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
     ax2.scatter(times, fluxes)
     #ax2.set_xlabel("Time ("+ time_string + ")")
-    ax2.set_xlabel("Time (MJD)")
+    #ax2.set_xlabel("Time (MJD)")
+    ax2.set_xlabel("Time(BMJD_TDB)")
     ax2.set_ylabel("Flux (normed and zeroed)")
     standard_deviation= np.std(fluxes)
     plt.text(0.1, 0.9, "standard deviation: " + str(standard_deviation), transform = ax2.transAxes, bbox= dict(facecolor='blue', alpha = 0.2))
