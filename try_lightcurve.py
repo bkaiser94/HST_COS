@@ -5,6 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from astropy.io import fits
 import sys
+from astropy.time import Time
 
 from calcos import calcos
 from costools import timefilter
@@ -13,7 +14,7 @@ import local_lightcurve as lc #I have created a second directory within here tha
 
 
 #target_dir = sys.argv[1] + '/'
-#stepsize = int(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
+#stepsize = int(sys.argv[2]) 
 second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 
 def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
@@ -131,11 +132,14 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
         os.chdir(dest_dir)
     print os.getcwd()
     time_sec= (mjd_array- mjd_array[0])*second_per_mjd
-    textheader= 'mjd\tgross\tflux\ttime(s)'
+    time_mjd= Time(mjd_array, format= 'mjd', scale= 'utc')
+    bmjd_array= time_mjd.tdb.mjd
+    textheader= 'mjd\tgross\tflux\ttime(s)\tbmjd_tdb'
     #textcomment= 'step = ' + str(stepsize)
     out_array= np.append([mjd_array], [gross_array], axis = 0)
     out_array = np.append(out_array, [flux_array], axis = 0)
     out_array = np.append(out_array, [time_sec], axis=0)
+    out_array= np.append(out_array, [bmjd_array], axis=0)
     print out_array.shape
     out_array= out_array.T
     print out_array.shape

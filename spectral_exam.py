@@ -84,6 +84,7 @@ for dataset in glob(target_dir+ '/*x1dsum.fits'):
     upper_mask= np.where(wavelengths < wave_max)
     wavelengths= np.copy(wavelengths[upper_mask])
     fluxes= np.copy(fluxes[upper_mask])
+    print "fluxes.shape: ", fluxes.shape
     wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
     wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
     wavelengths, fluxes = remove_range(wavelengths, fluxes, config.nitrogen_mask)
