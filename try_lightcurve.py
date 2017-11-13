@@ -131,10 +131,11 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
             os.makedirs(dest_dir)
         os.chdir(dest_dir)
     print os.getcwd()
-    time_sec= (mjd_array- mjd_array[0])*second_per_mjd
+    #time_sec= (mjd_array- mjd_array[0])*second_per_mjd #This needs to be changed for the times in seconds to be in terms of bmjd_tdb
     time_mjd= Time(mjd_array, format= 'mjd', scale= 'utc')
     bmjd_array= time_mjd.tdb.mjd
-    textheader= 'mjd\tgross\tflux\ttime(s)\tbmjd_tdb'
+    time_sec= (bmjd_array- bmjd_array[0])*second_per_mjd #This should correctly output the seconds times in the BMJD_tdb version
+    textheader= 'mjd\tgross\tflux\ttime(s)(bmjd_tdb)\tbmjd_tdb'
     #textcomment= 'step = ' + str(stepsize)
     out_array= np.append([mjd_array], [gross_array], axis = 0)
     out_array = np.append(out_array, [flux_array], axis = 0)

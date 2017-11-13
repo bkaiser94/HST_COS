@@ -340,7 +340,7 @@ def extract_index(hdu, x_start, x_end,
         #oxygen = (1298, 1312) #This is the original wavelength range to mask
         lyman = (1206, 1226)  #my altered values
         oxygen = (1295, 1312) #this is my version
-        nitrogen= (1195, 1205) #this is a value I added
+        nitrogen= (1195, 1207) #this is a value I added
         print ("OXYGEN MASKING CHANGED FROM DEFAULT!")
         print ("Current oxygen mask: ", oxygen)
         print ("Nitrogen-I mask: ", nitrogen)

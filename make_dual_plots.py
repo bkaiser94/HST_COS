@@ -177,7 +177,6 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
             #ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
     gain_change_list_bmjd = Time(config.gain_change_list, scale= 'utc')
     gain_change_list_bmjd= gain_change_list_bmjd.tdb.mjd
-    gain_change_list_bmjd
     for gain_change in gain_change_list_bmjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((gain_change > min_time) & (gain_change< max_time)):
