@@ -61,8 +61,8 @@ def plot_all_x1d(target_dir, low_lim, high_lim):
             #print thing['wavelength']
         wavelengths= np.copy(hdu[1].data['wavelength'].ravel())
         print wavelengths.shape
-        #fluxes= np.copy(hdu[1].data['flux'].ravel())
-        fluxes= np.copy(hdu[1].data['Gcounts'].ravel())
+        fluxes= np.copy(hdu[1].data['flux'].ravel())
+        #fluxes= np.copy(hdu[1].data['Gcounts'].ravel())
 
         #print "fluxes",  fluxes
         arrshape= wavelengths.shape
@@ -115,8 +115,8 @@ def plot_all_x1d(target_dir, low_lim, high_lim):
         ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
     print flux_all.shape
     flux_all= flux_all[1:, :] #remove the first row of zeros
-    #flux_med= np.nanmedian(flux_all, axis = 0)
-    flux_med= np.sum(flux_all, axis=0)
+    flux_med= np.nanmedian(flux_all, axis = 0)
+    #flux_med= np.sum(flux_all, axis=0)
     ax1.plot(plot_waves, flux_med, label= 'median combined spectra')
     ax1.legend(numpoints=1, fontsize=14, loc='best' )
     ax1.set_ylabel('Flux (normed)')
