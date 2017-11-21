@@ -35,11 +35,11 @@ def plot_events(times):
     for gain_change in gain_change_list_bmjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((gain_change > min_time) & (gain_change< max_time)):
-            ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
+            plt.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
     for lpos in Time(config.lpos_list, format = 'mjd', scale = 'utc').tdb.mjd:
         #if ((fppos > times.min) & (fppos < times.max)):
         if ((lpos > min_time) & (lpos < max_time)):
-            ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
+            plt.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
 
 def plot_stuff(inputfile):
     all_array = np.genfromtxt(inputfile, names=True)

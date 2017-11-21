@@ -21,7 +21,6 @@ __all__ = ['extract',
            ]
 
 #-------------------------------------------------------------------------------
-
 def extract(filename, **kwargs):
     """ Extract lightcurve from COS dataset
 
