@@ -119,9 +119,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     print flux_all.shape
     flux_all= flux_all[1:, :] #remove the first row of zeros
     flux_med= np.nanmedian(flux_all, axis = 0)
-    ax1.plot(plot_waves, flux_med/np.nanmean(flux_med), label= 'median combined averaged spectra')
+    #ax1.plot(plot_waves, flux_med/np.nanmean(flux_med), label= 'median combined averaged spectra')
+    ax1.plot(plot_waves, flux_med, label= 'median combined averaged spectra')
     ax1.legend(numpoints=1, fontsize=14, loc='best' )
-    ax1.set_ylabel('Flux (normed)')
+    #ax1.set_ylabel('Flux (normed)')
+    ax1.set_ylabel('Flux (cgs units)')
     ax1.set_xlabel('Wavelength $(\AA)$')
     ax1.set_title(target_dir)
     #ax1.set_yscale('log')

@@ -134,7 +134,8 @@ def run_spectral_exam(wave_limits):
     #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
     flux_all= flux_all[1:, :] #remove the first row of zeros
     flux_med= np.nanmedian(flux_all, axis = 0)
-    flux_normed = flux_med/np.nanmean(flux_med)
+    #flux_normed = flux_med/np.nanmean(flux_med) #changed this so it's actually not normalized
+    flux_normed= flux_med
     needed_zeros= max_points_per_window- plot_waves.shape[0] % max_points_per_window
     flux_normed = np.append(flux_normed, np.zeros(needed_zeros))
     dlambda= plot_waves[-1]-plot_waves[-2]    #find the wavelength bin size
@@ -149,7 +150,8 @@ def run_spectral_exam(wave_limits):
     longax.plot(plot_waves, flux_normed, color= 'k')
     plot_element_lines(plot_waves, longax)
     plt.grid()
-    longax.set_ylabel('Flux (normed)')
+    #longax.set_ylabel('Flux (normed)')
+    longax.set_ylabel('Flux (cgs units)')
     longax.set_xlabel('Wavelength $(\AA)$')
     longfig.savefig(dest_dir+target_dir+'long_spectrum_'+ str(wave_limits[0])+','+str(wave_limits[1]) + '.pdf')
 
@@ -174,7 +176,8 @@ def run_spectral_exam(wave_limits):
                         #ax.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
                 #print flux_all.shape
                 ax.plot(waves_for_plot, flux_for_plot, color = 'k')
-                ax.set_ylabel('Flux (normed)')
+                #ax.set_ylabel('Flux (normed)')
+                ax.set_ylabel('Flux (cgs units)')
                 ax.set_xlabel('Wavelength $(\AA)$')
                 ax.set_xlim([np.nanmin(waves_for_plot), np.nanmax(waves_for_plot)])
 
