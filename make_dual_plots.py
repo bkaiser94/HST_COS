@@ -114,8 +114,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         counter += 1
         #print "sum fluxes: ", np.sum(fluxes)
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
+    #for this_line in config.silicon_lines:
+        #ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
     for this_line in config.silicon_lines:
-        ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
+        if ((this_line >= wave_min) & (this_line <= wave_max)):
+            ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
     print flux_all.shape
     flux_all= flux_all[1:, :] #remove the first row of zeros
     flux_med= np.nanmedian(flux_all, axis = 0)

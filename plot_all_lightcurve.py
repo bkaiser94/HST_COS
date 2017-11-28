@@ -44,7 +44,7 @@ def plot_events(times):
 def plot_stuff(inputfile):
     all_array = np.genfromtxt(inputfile, names=True)
     #times= Time(all_array['mjd'], format='mjd')
-    times= np.copy(all_array['mjd'])
+    times= np.copy(all_array['bmjd_tdb'])
     fluxes= np.copy(all_array['flux'])
 
 
@@ -54,7 +54,7 @@ def plot_stuff(inputfile):
     plt.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
     plot_events(times)
     plt.scatter(times, fluxes)
-    plt.xlabel("Time (MJD)")
+    plt.xlabel("Time (BMJD_TDB)")
     plt.title(inputfile)
     plt.show()
 
