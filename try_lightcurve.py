@@ -26,7 +26,7 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     print "plotall=", plotall
     print "target_dir: ", target_dir
     #wlim= [1130, 1900] #3200 is the default max from what I could gather as is 915. The geocoronal emission lines are automatically excluded from the lightcurve
-    band= '*' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available
+    band= '_a' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available (the '*' option actually causes cos.py to double count bands)
 
     mjd_array = np.array([])
 
