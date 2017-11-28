@@ -15,8 +15,9 @@ gain_change_list= ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012
 #gain_change_list_mjd = gain_change_list.mjd
 #wave_limit_list =  [[1130,1430],[1130,1800],[1130,1850],[1130,1900]] #old one as of 2017-11-06
 #wave_limit_list =  [[930,1430], [1105,1232], [1172,1430],[1172,1800]] #new ones. Masks the weird bump in the ~1140 range with the G140L, and allows full spectra for G130M (new as of 2017-11-06)
-wave_limit_list =  [[1172,1800],[1150,1280],[1300,1435],[1300,1500],[1500,1700],[1105,1200]] #new ones as of 2017-11-27
-#wave_limit_list =  [[1250,1279]] #new ones as of 2017-11-27
+#wave_limit_list =  [[1172,1800],[1150,1280],[1300,1435],[1300,1500],[1500,1700],[1105,1200]] #new ones as of 2017-11-27
+wave_limit_list =  [[1180,1300],[1300,1500],[1500,1700],[1180,1800],[1250,1271],[1150,1200],[1300,1425],[1150,1425]] #new ones as of 2017-11-28
+#wave_limit_list =  [[1250,1279]] #broad lines in target
 if do_lyman:
     lyman_mask= [1206, 1226]
 else:
