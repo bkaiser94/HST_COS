@@ -22,9 +22,7 @@ import sys
 #from astropy.time import Time
 
 
-dest_dir = 'divided_lightcurves/'
-if not os.path.exists(dest_dir):
-            os.makedirs(dest_dir)
+
 
 def make_output_name(path1, path2):
     """
@@ -94,10 +92,13 @@ def lightcurve_divide(path1, path2):
 ###################################################
 if __name__ == '__main__':
     target_dir = sys.argv[1]
+    dest_dir = 'divided_lightcurves/'+target_dir+ '/'
+    if not os.path.exists(dest_dir):
+            os.makedirs(dest_dir)
     stepsize= int(sys.argv[2])
     wlim1= sys.argv[3] #comma-separated wavelength values
     pathin= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'
-    path1= glob(pathin= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+str(wlim1)+'*')[0]
+    path1= glob(target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+str(wlim1)+'*')[0]
     for path2 in glob(pathin):
         lightcurve_divide(path1, path2)
 
