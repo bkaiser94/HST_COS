@@ -91,10 +91,17 @@ def lightcurve_divide(path1, path2):
 
 
 
-
 ###################################################
 if __name__ == '__main__':
-    path1 = sys.argv[1]
-    path2= sys.argv[2]
+    target_dir = sys.argv[1]
+    stepsize= int(sys.argv[2])
+    wlim1= sys.argv[3] #comma-separated wavelength values
+    pathin= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'
+    path1= glob(pathin= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+str(wlim1)+'*')[0]
+    for path2 in glob(pathin):
+        lightcurve_divide(path1, path2)
+
+    #path1 = sys.argv[1]
+    #path2= sys.argv[2]
     #make_output_name(path1, path2)
-    lightcurve_divide(path1,path2)
+    #lightcurve_divide(path1,path2)
