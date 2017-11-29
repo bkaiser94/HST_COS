@@ -11,9 +11,11 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 import six
-
+import sys
 from .utils import expand_refname
 
+sys.path.append('../')
+import config
 __all__ = ['extract',
            'collect_inputs',
            'get_both_filenames',
@@ -337,9 +339,12 @@ def extract_index(hdu, x_start, x_end,
     if filter_airglow:
         #lyman = (1208, 1225) #original value...I think. double-check the package lightcurve if in doubt.
         #oxygen = (1298, 1312) #This is the original wavelength range to mask
-        lyman = (1206, 1226)  #my altered values
-        oxygen = (1295, 1312) #this is my version
-        nitrogen= (1195, 1207) #this is a value I added
+        #lyman = (1206, 1226)  #my altered values
+        #oxygen = (1295, 1312) #this is my version
+        #nitrogen= (1195, 1207) #this is a value I added
+        lyman = (config.lyman_mask[0], config.lyman_mask[1])
+        oxygen= (config.oxygen_mask[0], config.oxygen_mask[1])
+        nitrogen = (config.nitrogen_mask[0], config.nitrogen_mask[1])
         print ("OXYGEN MASKING CHANGED FROM DEFAULT!")
         print ("Current oxygen mask: ", oxygen)
         print ("Nitrogen-I mask: ", nitrogen)
