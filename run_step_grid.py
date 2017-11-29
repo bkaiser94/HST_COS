@@ -23,9 +23,19 @@ step_grid= np.append(step_grid, [90,120,180,240,300])
 
 def run_step_grid(target_dir):
     for wave_limit in config.wave_limit_list:
-        outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
+        try:
+            outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
+        except IndexError as error:
+            print "\n******************************"
+            print error
+            print "******************************\n"
         for stepsize in step_grid:
-            outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)
+            try:
+                outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)
+            except IndexError as error:
+                print "\n******************************"
+                print error
+                print "******************************\n"
     return ''
 
 if __name__ == '__main__':
