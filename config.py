@@ -5,7 +5,7 @@ These are the masking values in the corresponding spectra that get plotted. The 
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = True
+do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
 do_oxygen= True
 do_nitrogen= True
 

@@ -232,7 +232,11 @@ def run_spectral_exam(wave_limits):
         figsaves +=1
         
 for wave_limits in config.wave_limit_list:
-    run_spectral_exam(wave_limits)
+    try:
+        run_spectral_exam(wave_limits)
+    except IndexError as error:
+        print "Issue producing a spectrum for " + str(wave_limits)
+        print error
 
 
 
