@@ -15,7 +15,11 @@ stepsize = int(sys.argv[2])
 
 for limit in config.wave_limit_list:
     #nullstring = make_dual_plots(target_dir, stepsize, period, unit_arg, wave_limits= limit)
-    nullstring = make_dual_plots(target_dir, stepsize,  wave_limits= limit)
+    try:
+        nullstring = make_dual_plots(target_dir, stepsize,  wave_limits= limit)
+    except IndexError as error:
+        print "Wavelengths: ", limit
+        print error
 
 
 

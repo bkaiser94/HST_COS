@@ -19,7 +19,7 @@ num_freq = 100000
 
 all_array = np.genfromtxt(inputfile, names=True)
 #times= Time(all_array['mjd'], format='mjd')
-times= np.copy(all_array['mjd'])
+times= np.copy(all_array['bmjd_tdb'])
 times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 #times = (times- times[0]) #rezeroing the time of observation.
 
@@ -52,7 +52,6 @@ print "best_freq: ", best_freq, "Hz"
 #print "period: ", 1./best_freq*86400., "s"
 print "Best period: ", 1./best_freq, "s"
 print "best_power: ", best_power
-
 
 
 
