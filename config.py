@@ -5,9 +5,9 @@ These are the masking values in the corresponding spectra that get plotted. The 
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= False #smaller mask when False (good for G130M setup)
-do_nitrogen= False
+do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_oxygen= True #smaller mask when False (good for G130M setup)
+do_nitrogen= True
 
 lpos_list= [56132, 57063] #mjd dates of position changes
 #gain_change_list=Time( ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09'], scale='utc')

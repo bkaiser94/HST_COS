@@ -97,9 +97,11 @@ if __name__ == '__main__':
             os.makedirs(dest_dir)
     stepsize= int(sys.argv[2])
     wlim1= sys.argv[3] #comma-separated wavelength values
-    pathin= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'
-    path1= glob(target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+str(wlim1)+'*')[0]
+    pathin= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+ "wlim"+"*"
+    path1= glob(target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+'wlim'+str(wlim1)+'.txt')[0]
     for path2 in glob(pathin):
+        print "path1: ", path1
+        print "path2: ", path2
         lightcurve_divide(path1, path2)
 
     #path1 = sys.argv[1]

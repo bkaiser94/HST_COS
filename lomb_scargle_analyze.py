@@ -28,7 +28,7 @@ times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 #print times
 #period_range = np.array([10,20]) #hours
 #period_range= [100, 1400] #seconds
-period_range= [111., 2000.]
+period_range= [70., 1400.]
 #period_range= period_range *3600. #seconds
 frequency_range= np.linspace(1./period_range[1],1./period_range[0], num_freq)
 frequency = frequency_range
