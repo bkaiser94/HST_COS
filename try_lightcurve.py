@@ -120,7 +120,7 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
         plt.show()
 
         plt.title('not normed')
-        plt.hist(pre_flux, bins= 70)
+        plt.hist(gross_array, bins= 20)
         plt.show()
     else:
         pass
@@ -155,7 +155,10 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
 if __name__ == '__main__':
     target_dir = sys.argv[1] + '/'
     stepsize = float(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
-    wlim= [1130, 1900] 
+    #wlim= [1130, 1900] 
+    lowerlim= int(sys.argv[3])
+    upperlim= int(sys.argv[4])
+    wlim= [lowerlim, upperlim]
     outstring = make_lightcurve(target_dir, stepsize, wlim)
 
     

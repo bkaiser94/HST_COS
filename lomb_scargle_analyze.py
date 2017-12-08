@@ -28,7 +28,9 @@ times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 #print times
 #period_range = np.array([10,20]) #hours
 #period_range= [100, 1400] #seconds
-period_range= [70., 1400.]
+#period_range= [70., 1400.]
+#period_range= [ 5.00001,2000.]
+period_range = [70.,190.]
 #period_range= period_range *3600. #seconds
 frequency_range= np.linspace(1./period_range[1],1./period_range[0], num_freq)
 frequency = frequency_range
@@ -53,15 +55,34 @@ print "best_freq: ", best_freq, "Hz"
 print "Best period: ", 1./best_freq, "s"
 print "best_power: ", best_power
 
+sorted_indices= np.argsort(clean_power)
+sorted_power= clean_power[sorted_indices]
+sorted_freq= clean_frequency[sorted_indices]
+
+print "top 10 frequencies: "
+counter= 1
+for top_freq in reversed(sorted_freq[-10:]):
+    print top_freq, "Hz\tPeriod: ", 1./top_freq, "s\tPower: ", sorted_power[counter*-1]
+    counter+=1
 
 
 plt.figure(figsize= (20,9))
 plt.plot(frequency, power)
 plt.xlabel('frequency (Hz)')
 #plt.xlabel('frequency')
+#plt.ylim([0,0.02])
+plt.yscale('log')
 plt.title(inputfile + ' LombScargle')
 plt.show()
 
+
+plt.figure(figsize= (20,9))
+plt.plot(frequency, power)
+plt.xlabel('frequency (Hz)')
+#plt.xlabel('frequency')
+#plt.ylim([0,0.02])
+plt.title(inputfile + ' LombScargle')
+plt.show()
 
 
 #plt.figure(figsize= (20,9))
@@ -71,11 +92,11 @@ plt.show()
 #plt.show()
 
 
-plt.figure(figsize= (20,9))
-plt.plot(np.log10(1./frequency), power)
-plt.xlabel("log10(Period (seconds))")
-plt.title(inputfile + ' LombScargle')
-plt.show()
+#plt.figure(figsize= (20,9))
+#plt.plot(np.log10(1./frequency), power)
+#plt.xlabel("log10(Period (seconds))")
+#plt.title(inputfile + ' LombScargle')
+#plt.show()
 
 
 #plt.figure(figsize= (20,9))
