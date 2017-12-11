@@ -51,8 +51,9 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
         
         mjd_array= np.append(mjd_array, astrotable['mjd'])
         gross_array= np.append(gross_array, astrotable['gross'])
-        flux_table= np.append(flux_table, astrotable["flux"])
+        #flux_table= np.append(flux_table, astrotable["flux"])
         #flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmedian(astrotable['flux'])-1)) #for individual fits file median normalization
+        flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmean(astrotable['flux'])-1)) #for individual fits file mean normalization
         print "first mjd: " , astrotable['mjd'][0]
         #print "astrotable['gross']: " , astrotable['gross']
         #print "astrotable['background']: ", astrotable['background']
@@ -75,8 +76,8 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
 
     pre_flux = np.copy(flux_table)
     #flux_array = np.copy( flux_table/np.nanmean(flux_table)-1.) #normalize flux array around zero #This was the mean all norming method
-    #flux_array = np.copy(flux_table) #this should be uncommented for the individual fits normalization
-    flux_array= np.copy(flux_table/np.nanmedian(flux_table)-1.) #New version as of 2017-11-30
+    flux_array = np.copy(flux_table) #this should be uncommented for the individual fits normalization
+    #flux_array= np.copy(flux_table/np.nanmedian(flux_table)-1.) #New version as of 2017-11-30
     #print "np.nanmean(flux_array)" , np.nanmean(flux_array)
     #print "np.nanmean(flux_table: " ,np.nanmean(flux_table)
     #print "np.sum(flux_array-pre_flux): ", np.sum(flux_array- pre_flux)
