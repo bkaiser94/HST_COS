@@ -21,7 +21,8 @@ G160M_1600A_wave_list= [[1452, 1570],[1615,1760]]
 G130M_1291A_wave_list= [[1180,1800],[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271]]
 G130M_1300A_wave_list= G130M_1291A_wave_list #these are the same for now
 G140L_1105A_wave_list= [[1180,1300],[1300,1500],[1500,1700],[1180,1800]]
-wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list
+G130M_1096A_wave_list= [[955, 1060],[1106,1232]]
+wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list
 
 #wave_limit_list =  [[1250,1279]] #broad lines in target
 #wave_limit_list= [[1150, 1425]]
