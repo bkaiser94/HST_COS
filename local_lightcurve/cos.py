@@ -139,13 +139,16 @@ def extract(filename, **kwargs):
         start = max(start, hdu[1].data['TIME'].min()) #mjd-dependent point
         end = max(end, hdu[1].data['TIME'].max()) #mjd-dependent point (the arrival time within the exposure will vary between standards)
         exptime = max(exptime, hdu[1].header['EXPTIME']) #possibly something to cut... although exposure time would matter less I suppose
+        #This appears to be iteratively comparing the 
 
     if end > exptime:
         print("WARNING: data times go to {}, beyond exptime: {}".format(end, exptime))
 
     end = min(end, exptime)
 
-    all_steps = np.arange(start, end+step, step)
+    #all_steps = np.arange(start, end+step, step)
+    all_steps = np.float32(np.arange(start, end+step, step))
+
 
     if all_steps[-1] > end:
         truncate = True
@@ -191,6 +194,9 @@ def extract(filename, **kwargs):
 
         weights = hdu['events'].data['epsilon'][index] / step / tds_corr / response_array
         flux +=  np.histogram(hdu['events'].data['time'][index], all_steps, weights=weights)[0] / n_pixels
+        print ("datatype of times from fits file", hdu['events'].data['time'][index].dtype)
+        print ("datatype of times from fits file", hdu['events'].data['time'][index].dtype.name)
+
 
 
         ### Background calculation
