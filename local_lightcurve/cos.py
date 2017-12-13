@@ -194,9 +194,6 @@ def extract(filename, **kwargs):
 
         weights = hdu['events'].data['epsilon'][index] / step / tds_corr / response_array
         flux +=  np.histogram(hdu['events'].data['time'][index], all_steps, weights=weights)[0] / n_pixels
-        print ("datatype of times from fits file", hdu['events'].data['time'][index].dtype)
-        print ("datatype of times from fits file", hdu['events'].data['time'][index].dtype.name)
-
 
 
         ### Background calculation
