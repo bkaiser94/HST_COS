@@ -233,7 +233,8 @@ def extract(filename, **kwargs):
     gross = gross
     flux = flux - background_flux
     background = background
-    mjd = hdu[1].header['EXPSTART'] + np.array(all_steps[:-1]) * SECOND_PER_MJD
+    #mjd = hdu[1].header['EXPSTART'] + np.array(all_steps[:-1]) * SECOND_PER_MJD #original, but need to recast to float64 before combining with the mjd
+    mjd = hdu[1].header['EXPSTART'] + np.float_(np.array(all_steps[:-1])) * SECOND_PER_MJD #recasting to ensure the MJD values are in float64 instead of float32 because you need more precision for this.
     bins = np.ones(len(gross)) * step
     times = all_steps[:-1]
 
