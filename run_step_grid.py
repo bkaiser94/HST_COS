@@ -18,6 +18,8 @@ target_dir = sys.argv[1] + '/'
 #limit_list= [[1130,1430],[1130,1800],[1130,1850],[1130,1900]]
 step_grid= np.arange(5,31,5)
 app_array= np.arange(45,61,15)
+low_steps= np.arange(1,5,1)
+step_grid= np.append(low_steps, step_grid)
 step_grid= np.append(step_grid, app_array)
 step_grid= np.append(step_grid, [90,120,180,240,300])
 def get_wave_limits(target_dir):
@@ -48,12 +50,12 @@ def get_wave_limits(target_dir):
 def run_step_grid(target_dir):
     list_limits = get_wave_limits(target_dir)
     for wave_limit in list_limits:
-        try:
-            outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
-        except IndexError as error:
-            print "\n******************************"
-            print error
-            print "******************************\n"
+        #try:
+            #outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
+        #except IndexError as error:
+            #print "\n******************************"
+            #print error
+            #print "******************************\n"
         for stepsize in step_grid:
             try:
                 outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)

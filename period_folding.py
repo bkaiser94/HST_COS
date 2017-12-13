@@ -50,7 +50,7 @@ fold_times = times%period
 
 
 plt.figure(figsize= (20,9))
-plt.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
+#plt.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
 plt.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
 plt.scatter(fold_times, fluxes)
 plt.xlabel("Time ("+ time_string + ")")
