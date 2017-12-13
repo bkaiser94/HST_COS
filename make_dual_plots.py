@@ -25,7 +25,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     wave_max= wave_limits[1]
     lcbase= target_dir+ '_grid_lightcurves/' + '*step' + str(stepsize) + '_*'+str(wave_min)+',' + str(wave_max)+'*'
     lcfile= glob(lcbase)[0]
-    dest_dir = 'dual_plots/'
+    dest_dir = 'dual_plots/'+target_dir+"/"
     if not os.path.exists(dest_dir):
                 os.makedirs(dest_dir)
     
