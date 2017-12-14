@@ -1,7 +1,6 @@
 """
 File to contain values and data that I'm going to be calling in multiple files, and is just easier to keep here.
-These values are not called by lightcurve.cos.py, so you have to manually make sure the masks match up for the airglow values (the wavelength limits are called by the script that calls cos.py, so you're fine there.)
-These are the masking values in the corresponding spectra that get plotted. The actual light curve masking values are located in cos.py, and have to be separately updated manually at the moment.
+local_lightcurve.cos.py does actually look here now for the masking values, so no need to update anywhere other than here (unless you already made the lightcurves before updating this file.)
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
