@@ -162,14 +162,21 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #times= np.copy(all_array['mjd'])
         times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
         fluxes= np.copy(all_array['flux'])
-
+        gross= np.copy(all_array['gross'])
+        poisson= np.sqrt(np.mean(gross))/np.mean(gross) #approximate relative poisson noise across observations
+        standard_deviation= np.std(fluxes)
         #times= (times - times[0]) *time_converter
         #fold_times = times%period
 
 
         #plt.figure(figsize= (20,9))
         #ax2.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
-        ax2.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
+        ax2.axhline(y= 0,linestyle = '-', color = 'k' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.5)
+        def sig_barriers(sigma, color_line):
+            ax2.axhline(y = 3 * sigma, linestyle= ':', color = color_line,xmin = 0, xmax = 100000, linewidth = 1)
+            ax2.axhline(y = -3 * sigma, linestyle= ':', color = color_line,xmin = 0, xmax = 100000, linewidth = 1)
+        sig_barriers(poisson, 'r')
+        sig_barriers(standard_deviation, 'b')
         min_time= np.min(times)
         max_time = np.max(times)
         #gain_change_list_mjd = Time(config.gain_change_list, scale= 'utc').mjd
@@ -196,8 +203,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #ax2.set_xlabel("Time (MJD)")
         ax2.set_xlabel("Time(BMJD_TDB)")
         ax2.set_ylabel("Flux (normed and zeroed)")
-        standard_deviation= np.std(fluxes)
-        plt.text(0.1, 0.9, "standard deviation: " + str(standard_deviation), transform = ax2.transAxes, bbox= dict(facecolor='blue', alpha = 0.2))
+        
+        plt.text(0.1, 0.9, "standard deviation: " + str(standard_deviation)+"\navg gross counts: "+str(np.mean(gross)), transform = ax2.transAxes, bbox= dict(facecolor='blue', alpha = 0.2))
         
         #ax2.set_xlim(0, period)
         #ax2.set_title(lcfile + ' Period fold '+ str(period) + ' ' + time_string)
