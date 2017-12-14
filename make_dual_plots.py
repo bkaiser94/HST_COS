@@ -116,99 +116,104 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
     #for this_line in config.silicon_lines:
         #ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
-    for this_line in config.silicon_lines:
-        if ((this_line >= wave_min) & (this_line <= wave_max)):
-            ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
-    print flux_all.shape
-    flux_all= flux_all[1:, :] #remove the first row of zeros
-    flux_med= np.nanmedian(flux_all, axis = 0)
-    #ax1.plot(plot_waves, flux_med/np.nanmean(flux_med), label= 'median combined averaged spectra')
-    ax1.plot(plot_waves, flux_med, label= 'median combined averaged spectra')
-    ax1.legend(numpoints=1, fontsize=14, loc='best' )
-    #ax1.set_ylabel('Flux (normed)')
-    ax1.set_ylabel('Flux (cgs units)')
-    ax1.set_xlabel('Wavelength $(\AA)$')
-    ax1.set_title(target_dir)
-    #ax1.set_yscale('log')
+    try:
+        for this_line in config.silicon_lines:
+            if ((this_line >= wave_min) & (this_line <= wave_max)):
+                ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
+        print flux_all.shape
+        flux_all= flux_all[1:, :] #remove the first row of zeros
+        flux_med= np.nanmedian(flux_all, axis = 0)
+        #ax1.plot(plot_waves, flux_med/np.nanmean(flux_med), label= 'median combined averaged spectra')
+        ax1.plot(plot_waves, flux_med, label= 'median combined averaged spectra')
+        ax1.legend(numpoints=1, fontsize=14, loc='best' )
+        #ax1.set_ylabel('Flux (normed)')
+        ax1.set_ylabel('Flux (cgs units)')
+        ax1.set_xlabel('Wavelength $(\AA)$')
+        ax1.set_title(target_dir)
+        #ax1.set_yscale('log')
 
-    ax2= fig.add_subplot(2,1,2)
+        ax2= fig.add_subplot(2,1,2)
 
-    second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
+        second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 
-    #if unit_arg.startswith('s'):
-        #print "period in seconds"
-        #time_converter = second_per_mjd
-        #time_string = 's'
+        #if unit_arg.startswith('s'):
+            #print "period in seconds"
+            #time_converter = second_per_mjd
+            #time_string = 's'
+            
+        #elif unit_arg.startswith('h'):
+            #print "period in hours"
+            #time_converter= second_per_mjd/3600.
+            #time_string = 'hrs'
+
+        #elif unit_arg.startswith('d'):
+            #print 'period in days'
+            #time_converter = 1.
+            #time_string = 'days'
+
+        #elif unit_arg.startswith('m'):
+            #print 'period in minutes'
+            #time_converter = second_per_mjd/60.
+            #time_string = 'min'
+            
+
+        all_array = np.genfromtxt(lcfile, names=True)
+        #times= Time(all_array['mjd'], format='mjd')
+        #times= np.copy(all_array['mjd'])
+        times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
+        fluxes= np.copy(all_array['flux'])
+
+        #times= (times - times[0]) *time_converter
+        #fold_times = times%period
+
+
+        #plt.figure(figsize= (20,9))
+        #ax2.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
+        ax2.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
+        min_time= np.min(times)
+        max_time = np.max(times)
+        #gain_change_list_mjd = Time(config.gain_change_list, scale= 'utc').mjd
+        #for gain_change in gain_change_list_mjd:
+            ##if ((fppos > times.min) & (fppos < times.max)):
+            #if ((gain_change > min_time) & (gain_change< max_time)):
+                #ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
+        #for lpos in config.lpos_list:
+            ##if ((fppos > times.min) & (fppos < times.max)):
+            #if ((lpos > min_time) & (lpos < max_time)):
+                #ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
+        gain_change_list_bmjd = Time(config.gain_change_list, scale= 'utc')
+        gain_change_list_bmjd= gain_change_list_bmjd.tdb.mjd
+        for gain_change in gain_change_list_bmjd:
+            #if ((fppos > times.min) & (fppos < times.max)):
+            if ((gain_change > min_time) & (gain_change< max_time)):
+                ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
+        for lpos in Time(config.lpos_list, format = 'mjd', scale = 'utc').tdb.mjd:
+            #if ((fppos > times.min) & (fppos < times.max)):
+            if ((lpos > min_time) & (lpos < max_time)):
+                ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
+        ax2.scatter(times, fluxes)
+        #ax2.set_xlabel("Time ("+ time_string + ")")
+        #ax2.set_xlabel("Time (MJD)")
+        ax2.set_xlabel("Time(BMJD_TDB)")
+        ax2.set_ylabel("Flux (normed and zeroed)")
+        standard_deviation= np.std(fluxes)
+        plt.text(0.1, 0.9, "standard deviation: " + str(standard_deviation), transform = ax2.transAxes, bbox= dict(facecolor='blue', alpha = 0.2))
         
-    #elif unit_arg.startswith('h'):
-        #print "period in hours"
-        #time_converter= second_per_mjd/3600.
-        #time_string = 'hrs'
+        #ax2.set_xlim(0, period)
+        #ax2.set_title(lcfile + ' Period fold '+ str(period) + ' ' + time_string)
+        ax2.set_title(lcfile)
+        #plt.show()
 
-    #elif unit_arg.startswith('d'):
-        #print 'period in days'
-        #time_converter = 1.
-        #time_string = 'days'
+        fig.tight_layout()
+        #plt.show()
 
-    #elif unit_arg.startswith('m'):
-        #print 'period in minutes'
-        #time_converter = second_per_mjd/60.
-        #time_string = 'min'
-        
-
-    all_array = np.genfromtxt(lcfile, names=True)
-    #times= Time(all_array['mjd'], format='mjd')
-    #times= np.copy(all_array['mjd'])
-    times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
-    fluxes= np.copy(all_array['flux'])
-
-    #times= (times - times[0]) *time_converter
-    #fold_times = times%period
-
-
-    #plt.figure(figsize= (20,9))
-    #ax2.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
-    ax2.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
-    min_time= np.min(times)
-    max_time = np.max(times)
-    #gain_change_list_mjd = Time(config.gain_change_list, scale= 'utc').mjd
-    #for gain_change in gain_change_list_mjd:
-        ##if ((fppos > times.min) & (fppos < times.max)):
-        #if ((gain_change > min_time) & (gain_change< max_time)):
-            #ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
-    #for lpos in config.lpos_list:
-        ##if ((fppos > times.min) & (fppos < times.max)):
-        #if ((lpos > min_time) & (lpos < max_time)):
-            #ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
-    gain_change_list_bmjd = Time(config.gain_change_list, scale= 'utc')
-    gain_change_list_bmjd= gain_change_list_bmjd.tdb.mjd
-    for gain_change in gain_change_list_bmjd:
-        #if ((fppos > times.min) & (fppos < times.max)):
-        if ((gain_change > min_time) & (gain_change< max_time)):
-            ax2.axvline(x= gain_change ,linestyle = '-', color = 'r' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.2)
-    for lpos in Time(config.lpos_list, format = 'mjd', scale = 'utc').tdb.mjd:
-        #if ((fppos > times.min) & (fppos < times.max)):
-        if ((lpos > min_time) & (lpos < max_time)):
-            ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
-    ax2.scatter(times, fluxes)
-    #ax2.set_xlabel("Time ("+ time_string + ")")
-    #ax2.set_xlabel("Time (MJD)")
-    ax2.set_xlabel("Time(BMJD_TDB)")
-    ax2.set_ylabel("Flux (normed and zeroed)")
-    standard_deviation= np.std(fluxes)
-    plt.text(0.1, 0.9, "standard deviation: " + str(standard_deviation), transform = ax2.transAxes, bbox= dict(facecolor='blue', alpha = 0.2))
-    
-    #ax2.set_xlim(0, period)
-    #ax2.set_title(lcfile + ' Period fold '+ str(period) + ' ' + time_string)
-    ax2.set_title(lcfile)
-    #plt.show()
-
-    fig.tight_layout()
-    #plt.show()
-
-    #fig.savefig(dest_dir+ target_dir + '_dual_plot_fold_'+ str(period) + unit_arg+'_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
-    fig.savefig(dest_dir+ target_dir + '_dual_plot_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
-    return ''
+        #fig.savefig(dest_dir+ target_dir + '_dual_plot_fold_'+ str(period) + unit_arg+'_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
+        fig.savefig(dest_dir+ target_dir + '_dual_plot_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
+        return ''
+    except UnboundLocalError as error:
+        print error
+        print "guess we're just not working or something"
+        return ""
 
 ######################3
 if __name__ == '__main__':
