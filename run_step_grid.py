@@ -12,7 +12,7 @@ calls try_lightcurve.py and then runs it over a grid of step sizes, and potentia
 
 """
 
-target_dir = sys.argv[1] + '/'
+
 #step_grid= np.arange(1,121, 1) #by going one above the desired value, it is included in the range. For example to include 120 make it 121.
 #step_grid= np.arange(15,121, 15) #by going one above the desired value, it is included in the range. For example to include 120 make it 121.
 #limit_list= [[1130,1430],[1130,1800],[1130,1850],[1130,1900]]
@@ -67,5 +67,6 @@ def run_step_grid(target_dir):
 
 
 if __name__ == '__main__':
+    target_dir = sys.argv[1] + '/'
     run_step_grid(target_dir)
 
