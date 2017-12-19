@@ -44,6 +44,8 @@ def get_wave_limits(target_dir):
     elif grating == "G160M":
         if center_wave == 1600:
             list_limits = config.G160M_1600A_wave_list
+        if center_wave == 1577:
+            list_limits= config.G160M_1577A_wave_list
     return list_limits
 
 

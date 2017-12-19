@@ -51,7 +51,7 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
         
         mjd_array= np.append(mjd_array, astrotable['mjd'])
         gross_array= np.append(gross_array, astrotable['gross'])
-        #flux_table= np.append(flux_table, astrotable["flux"])
+        #flux_table= np.append(flux_table, astrotable["flux"]) #for complete dataset mean normalization
         #flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmedian(astrotable['flux'])-1)) #for individual fits file median normalization
         flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmean(astrotable['flux'])-1)) #for individual fits file mean normalization
         print "first mjd: " , astrotable['mjd'][0]

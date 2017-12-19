@@ -16,12 +16,13 @@ gain_change_list= ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012
 #wave_limit_list =  [[930,1430], [1105,1232], [1172,1430],[1172,1800]] #new ones. Masks the weird bump in the ~1140 range with the G140L, and allows full spectra for G130M (new as of 2017-11-06)
 #wave_limit_list =  [[1172,1800],[1150,1280],[1300,1435],[1300,1500],[1500,1700],[1105,1200]] #new ones as of 2017-11-27
 #wave_limit_list =  [[1180,1300],[1300,1500],[1500,1700],[1180,1800],[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271],[1452, 1570],[1615,1760]] #new ones as of 2017-11-28
-G160M_1600A_wave_list= [[1452, 1570],[1615,1760]]
+G160M_1600A_wave_list= [[1452, 1570],[1615,1760],[1452,1760]]
+G160M_1577A_wave_list= [[1387,1557],[1578,1742],[1387,1742]] #Based only on the GW-Librae observation which only included 4 exposures all in FP-POS 3
 G130M_1291A_wave_list= [[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271]]
 G130M_1300A_wave_list= G130M_1291A_wave_list #these are the same for now
 G140L_1105A_wave_list= [[1180,1300],[1300,1500],[1500,1700],[1180,1800]]
 G130M_1096A_wave_list= [[955, 1060],[1106,1232]]
-wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list
+wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list + G160M_1577A_wave_list
 
 #wave_limit_list =  [[1250,1279]] #broad lines in target
 #wave_limit_list= [[1150, 1425]]
