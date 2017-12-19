@@ -163,6 +163,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
         fluxes= np.copy(all_array['flux'])
         gross= np.copy(all_array['gross'])
+        flux_err= np.sqrt(gross)/gross
+        time_err= stepsize/2./second_per_mjd
         poisson= np.sqrt(np.mean(gross))/np.mean(gross) #approximate relative poisson noise across observations
         standard_deviation= np.std(fluxes)
         #times= (times - times[0]) *time_converter
@@ -198,7 +200,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
             #if ((fppos > times.min) & (fppos < times.max)):
             if ((lpos > min_time) & (lpos < max_time)):
                 ax2.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
-        ax2.scatter(times, fluxes)
+        #ax2.scatter(times, fluxes)
+        ax2.errorbar(times, fluxes, flux_err, time_err, fmt= 'o')
         #ax2.set_xlabel("Time ("+ time_string + ")")
         #ax2.set_xlabel("Time (MJD)")
         ax2.set_xlabel("Time(BMJD_TDB)")
