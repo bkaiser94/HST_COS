@@ -19,6 +19,7 @@ import local_lightcurve as lc
 #gain_change_list=Time( ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09'], scale='utc')
 gain_change_list_mjd = Time(config.gain_change_list, scale='utc').mjd
 print gain_change_list_mjd
+second_per_mjd= 1./1.15741e-5 
 def plot_events(times):
     min_time= np.min(times)
     max_time = np.max(times)
@@ -46,15 +47,21 @@ def plot_stuff(inputfile):
     #times= Time(all_array['mjd'], format='mjd')
     times= np.copy(all_array['bmjd_tdb'])
     fluxes= np.copy(all_array['flux'])
-
+    gross = np.copy(all_array['gross']) #approximate poisson noise of the plot.
+    flux_err = np.sqrt(gross)/gross
+    stepsize = inputfile.split('step')[-1]
+    stepsize= float(stepsize.split('_')[0]) #hopefully the stepsize
+    time_err = stepsize/2./second_per_mjd
 
 
     plt.figure(figsize= (20,9))
     #plt.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
     plt.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
     plot_events(times)
-    plt.scatter(times, fluxes)
+    #plt.scatter(times, fluxes)
+    plt.errorbar(times, fluxes, flux_err, time_err, fmt= 'o')
     plt.xlabel("Time (BMJD_TDB)")
+    plt.ylabel("Flux Residuals about the Mean")
     plt.title(inputfile)
     plt.show()
 
