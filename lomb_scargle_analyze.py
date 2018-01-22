@@ -28,7 +28,8 @@ times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 #print times
 #period_range = np.array([10,20]) #hours
 #period_range= [100, 1400] #seconds
-period_range= [70., 1400.]
+#period_range= [70., 1400.]
+period_range= [2*second_per_mjd, 4000*second_per_mjd]
 #period_range= [ 5.00001,2000.]
 #period_range = [70.,190.]
 #period_range= period_range *3600. #seconds
@@ -62,7 +63,7 @@ sorted_freq= clean_frequency[sorted_indices]
 print "top 10 frequencies: "
 counter= 1
 for top_freq in reversed(sorted_freq[-10:]):
-    print top_freq, "Hz\tPeriod: ", 1./top_freq, "s\tPower: ", sorted_power[counter*-1]
+    print top_freq, "Hz\tPeriod: ", 1./top_freq, "s\t""\t=", 1./top_freq/second_per_mjd, "d\t", "Power: ", sorted_power[counter*-1]
     counter+=1
 
 
