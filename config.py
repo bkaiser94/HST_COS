@@ -4,9 +4,9 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= True #smaller mask when False (good for G130M setup)
-do_nitrogen= True
+do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_oxygen= False #smaller mask when False (good for G130M setup)
+do_nitrogen= False
 cos_refresh_rate = 0.032 #seconds
 lpos_list= [56132, 57063] #mjd dates of position changes
 #gain_change_list=Time( ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09'], scale='utc')
@@ -33,7 +33,7 @@ else:
 if do_oxygen:
     oxygen_mask= [1295, 1313] #airglow wavelengths to be filtered according to lightcurve
 else:
-    oxygen_mask= [1298,1306]
+    oxygen_mask= [1306,1306]
 if do_nitrogen:
     nitrogen_mask= [1195, 1207] #hopefully this helps the dimmer targets... hopefully
 else:
