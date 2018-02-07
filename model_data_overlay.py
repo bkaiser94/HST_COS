@@ -6,6 +6,8 @@ import os
 from glob import glob
 from astropy.io import fits
 
+import spec_plot_tools as spt
+
 """
 In the future I'll have to change the model fitting to accomodate the float or integer input values for logg and teff, but for tonight, I'm just going to input them as correctly padded strings to save myself a headache for the moment
 """
@@ -15,8 +17,11 @@ target_path = sys.argv[1]+'/' #the input should be the target name just like all
 teff= "013500" #hard coded for test target
 #logg= 8.0 #model values to pull (should be changed to be read from somewhere in the future)
 logg = "800" #hard coded for test target(it was 7.8 in the paper, but that is technically the same as this gridpoint to two sig figs)
+min_wave= 1142
+max_wave= 1422
 lyman_alpha = [1214,1217] #probably should put this into the config file as the masking for the spectroscopic fitting (but really this goes back to the need for individual text files by target for the various maskings that are required)
 oxygen= [1300, 1308]
+nitrogen=[1199,1201]
 seg_gap = [1268,1298] #segment gap mask used for photometry for the G130M at 1291 Angs
 scale_wave_range= [1400, 1420] 
 #scale factor to be just typed in for the moment but should be replaced by a function at some point that calculates it for you
@@ -54,32 +59,32 @@ def get_model_spec(fitted_teff, fitted_logg):
     print "model_spec.shape:",  model_spec.shape
     return model_spec
 
-def trim_spec(input_spec, min_wave, max_wave):
-    lower_indices = np.where(input_spec[0]< max_wave)
-    trimmed_waves= input_spec[0][lower_indices]
-    trimmed_flux= input_spec[1][lower_indices]
-    upper_indices= np.where(trimmed_waves > min_wave)
-    trimmed_waves= trimmed_waves[upper_indices]
-    trimmed_flux = trimmed_flux[upper_indices]
-    trimmed_spec= np.vstack([trimmed_waves, trimmed_flux])
-    print trimmed_spec.shape
-    return trimmed_spec
+#def trim_spec(input_spec, min_wave, max_wave):
+    #lower_indices = np.where(input_spec[0]< max_wave)
+    #trimmed_waves= input_spec[0][lower_indices]
+    #trimmed_flux= input_spec[1][lower_indices]
+    #upper_indices= np.where(trimmed_waves > min_wave)
+    #trimmed_waves= trimmed_waves[upper_indices]
+    #trimmed_flux = trimmed_flux[upper_indices]
+    #trimmed_spec= np.vstack([trimmed_waves, trimmed_flux])
+    #print trimmed_spec.shape
+    #return trimmed_spec
 
-def remove_range(wave_array, other_array, bound_list):
-    """
-    Removes wavelengths and flux values from the array that fall in the range specified by bound_list
-    """
-    lower_bound = bound_list[0]
-    upper_bound= bound_list[1]
-    low_mask = np.where(wave_array < lower_bound)
-    high_mask= np.where(wave_array > upper_bound)
-    low_waves= wave_array[low_mask]
-    high_waves= wave_array[high_mask]
-    low_other = other_array[low_mask]
-    high_other= other_array[high_mask]
-    merge_waves= np.append(low_waves, high_waves)
-    merge_other= np.append(low_other, high_other)
-    return np.vstack([merge_waves, merge_other])
+#def remove_range(wave_array, other_array, bound_list):
+    #"""
+    #Removes wavelengths and flux values from the array that fall in the range specified by bound_list
+    #"""
+    #lower_bound = bound_list[0]
+    #upper_bound= bound_list[1]
+    #low_mask = np.where(wave_array < lower_bound)
+    #high_mask= np.where(wave_array > upper_bound)
+    #low_waves= wave_array[low_mask]
+    #high_waves= wave_array[high_mask]
+    #low_other = other_array[low_mask]
+    #high_other= other_array[high_mask]
+    #merge_waves= np.append(low_waves, high_waves)
+    #merge_other= np.append(low_other, high_other)
+    #return np.vstack([merge_waves, merge_other])
 #########
 
 def get_scale_factor(target_spec, model_spec, wave_range):
@@ -101,24 +106,26 @@ def plot_overlays(spec1, spec2, scaling_coefficient):
     plt.show()
     return ''
 
-def sort_spectrum(input_spec):
-    """
-    Hopefully this fixes the apparent errant lines throughout the line plots of target spectra.
-    """
-    sort_indices = np.argsort(input_spec[0])
-    sorted_waves= input_spec[0][sort_indices]
-    sorted_flux= input_spec[1][sort_indices]
-    sorted_spectrum= np.vstack([sorted_waves, sorted_flux])
+#def sort_spectrum(input_spec):
+    #"""
+    #Hopefully this fixes the apparent errant lines throughout the line plots of target spectra.
+    #"""
+    #sort_indices = np.argsort(input_spec[0])
+    #sorted_waves= input_spec[0][sort_indices]
+    #sorted_flux= input_spec[1][sort_indices]
+    #sorted_spectrum= np.vstack([sorted_waves, sorted_flux])
     
-    return sorted_spectrum
+    #return sorted_spectrum
 ##########
 print os.getcwd()
 
 model_spec= get_model_spec(teff, logg)
-model_spec= trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
-target_spec= remove_range(target_spec[0], target_spec[1], lyman_alpha)
-target_spec= remove_range(target_spec[0], target_spec[1], oxygen)
-target_spec= remove_range(target_spec[0], target_spec[1], seg_gap)
-target_spec = sort_spectrum(target_spec)
+#target_spec= remove_range(target_spec[0], target_spec[1], lyman_alpha)
+#target_spec= remove_range(target_spec[0], target_spec[1], oxygen)
+#target_spec= remove_range(target_spec[0], target_spec[1], seg_gap)
+#target_spec = sort_spectrum(target_spec)
+mask_list= [lyman_alpha]+[oxygen]+[seg_gap]+[nitrogen]
+target_spec = spt.clean_spectrum(target_spec, min_wave, max_wave, mask_list)
+model_spec= spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
 scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
 plot_overlays(target_spec, model_spec, scaling_coefficient)
