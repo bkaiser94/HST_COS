@@ -4,8 +4,8 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= False #smaller mask when False (good for G130M setup)
+do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_oxygen= True #smaller mask when False (good for G130M setup)
 do_nitrogen= False
 cos_refresh_rate = 0.032 #seconds
 lpos_list= [56132, 57063] #mjd dates of lifetime position changes (There's an LP-POS 4, so I need to add another one to this)
@@ -18,10 +18,11 @@ gain_change_list= ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012
 #wave_limit_list =  [[1180,1300],[1300,1500],[1500,1700],[1180,1800],[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271],[1452, 1570],[1615,1760]] #new ones as of 2017-11-28
 G160M_1600A_wave_list= [[1452, 1570],[1615,1760],[1452,1760]]
 G160M_1577A_wave_list= [[1387,1557],[1578,1742],[1387,1742]] #Based only on the GW-Librae observation which only included 4 exposures all in FP-POS 3
-G130M_1291A_wave_list= [[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271]]
-G130M_1300A_wave_list= G130M_1291A_wave_list #these are the same for now
+G130M_1291A_wave_list=[[1142, 1268],[1298,1422],[1142,1422], [1142,1200],[1250,1271]]
+#G130M_1300A_wave_list= G130M_1291A_wave_list #these are the same for now
+G130M_1300A_wave_list= [[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271]]
 G140L_1105A_wave_list= [[1180,1300],[1300,1500],[1500,1700],[1180,1800]]
-G130M_1096A_wave_list= [[955, 1060],[1106,1232]]
+G130M_1096A_wave_list= [[955, 1075],[1106,1232]]
 wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list + G160M_1577A_wave_list
 
 #wave_limit_list =  [[1250,1279]] #broad lines in target
@@ -41,3 +42,10 @@ else:
 
 
 silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309] #silicon lines in the UV
+
+seg_gap_dict={'G130M':{
+    '1291':[1268,1298],
+    '1300':[1278,1306],
+    '1096':[1075,1106]},
+             'G140L':{'1105': [1179,1180]}, 
+             'G160M': {'1600': [1569,1619]}}
