@@ -59,32 +59,7 @@ def get_model_spec(fitted_teff, fitted_logg):
     print "model_spec.shape:",  model_spec.shape
     return model_spec
 
-#def trim_spec(input_spec, min_wave, max_wave):
-    #lower_indices = np.where(input_spec[0]< max_wave)
-    #trimmed_waves= input_spec[0][lower_indices]
-    #trimmed_flux= input_spec[1][lower_indices]
-    #upper_indices= np.where(trimmed_waves > min_wave)
-    #trimmed_waves= trimmed_waves[upper_indices]
-    #trimmed_flux = trimmed_flux[upper_indices]
-    #trimmed_spec= np.vstack([trimmed_waves, trimmed_flux])
-    #print trimmed_spec.shape
-    #return trimmed_spec
 
-#def remove_range(wave_array, other_array, bound_list):
-    #"""
-    #Removes wavelengths and flux values from the array that fall in the range specified by bound_list
-    #"""
-    #lower_bound = bound_list[0]
-    #upper_bound= bound_list[1]
-    #low_mask = np.where(wave_array < lower_bound)
-    #high_mask= np.where(wave_array > upper_bound)
-    #low_waves= wave_array[low_mask]
-    #high_waves= wave_array[high_mask]
-    #low_other = other_array[low_mask]
-    #high_other= other_array[high_mask]
-    #merge_waves= np.append(low_waves, high_waves)
-    #merge_other= np.append(low_other, high_other)
-    #return np.vstack([merge_waves, merge_other])
 #########
 
 def get_scale_factor(target_spec, model_spec, wave_range):
@@ -106,16 +81,7 @@ def plot_overlays(spec1, spec2, scaling_coefficient):
     plt.show()
     return ''
 
-#def sort_spectrum(input_spec):
-    #"""
-    #Hopefully this fixes the apparent errant lines throughout the line plots of target spectra.
-    #"""
-    #sort_indices = np.argsort(input_spec[0])
-    #sorted_waves= input_spec[0][sort_indices]
-    #sorted_flux= input_spec[1][sort_indices]
-    #sorted_spectrum= np.vstack([sorted_waves, sorted_flux])
-    
-    #return sorted_spectrum
+
 ##########
 print os.getcwd()
 

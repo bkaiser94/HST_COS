@@ -11,6 +11,7 @@ import config
 #from calcos import calcos
 from costools import timefilter
 import local_lightcurve as lc
+import spec_plot_tools as spt
 
 #from plot_all_lightcurve import gain_change_list_mjd, lpos_list
 
@@ -38,22 +39,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
     ax1 = fig.add_subplot(2,1,1)
 
-    def remove_range(wave_array, other_array, bound_list):
-        """
-        Removes wavelengths and flux values from the array that fall in the range specified by bound_list
-        """
-        lower_bound = bound_list[0]
-        upper_bound= bound_list[1]
-        low_mask = np.where(wave_array < lower_bound)
-        high_mask= np.where(wave_array > upper_bound)
-        low_waves= wave_array[low_mask]
-        high_waves= wave_array[high_mask]
-        low_other = other_array[low_mask]
-        high_other= other_array[high_mask]
-        merge_waves= np.append(low_waves, high_waves)
-        merge_other= np.append(low_other, high_other)
-        return merge_waves, merge_other
-
+   
     counter= 0
     for dataset in glob(target_dir+ '/*x1dsum.fits'):
         hdu = fits.open(dataset)
@@ -69,16 +55,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         fluxes= np.copy(hdu[1].data['flux'].ravel())
         #print "fluxes",  fluxes
         arrshape= wavelengths.shape
-        #unmasked= np.where((wavelengths < lyman[0]*np.ones(arrshape)) or ((wavelengths > lyman[1]*np.ones(arrshape)) and (wavelengths < oxygen[0])*np.ones(arrshape)) or (wavelengths > oxygen[1]*np.ones(arrshape)))
-        lower_mask = np.where(wavelengths > wave_min)
-        wavelengths= np.copy(wavelengths[lower_mask])
-        fluxes = np.copy(fluxes[lower_mask])
-        upper_mask= np.where(wavelengths < wave_max)
-        wavelengths= np.copy(wavelengths[upper_mask])
-        fluxes= np.copy(fluxes[upper_mask])
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.nitrogen_mask)
+        target_spec= np.vstack([wavelengths, fluxes])
+        mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] #need to add the segment gap in the future
+        cleaned_spec = spt.clean_spectrum(target_spec, wave_min, wave_max, mask_list)
+        wavelengths= cleaned_spec[0]
+        fluxes= cleaned_spec[1]
         
         print "fluxes.shape: ", fluxes.shape
         print "wavelengths.shape" , wavelengths.shape
@@ -101,16 +82,6 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
                 flux_all= np.append(flux_all,[fluxes[:shape_dif]], axis=0)
                 print "truncating new spectrum to mach previous dimensions"
             
-        #try:
-            ##flux_all = np.copy(fluxes+flux_all)
-        #except ValueError as error:
-            #print error
-            #shape_dif = flux_all.shape[0] - fluxes.shape[0]
-            #if shape_dif > 0 :
-                #padarray= np.zeros(shape_dif)
-                #flux_all= np.copy(flux_all + np.append(fluxes, padarray))
-            #elif shape_dif < 0 :
-                #flux_all= np.copy(flux_all + fluxes[:shape_dif])
         counter += 1
         #print "sum fluxes: ", np.sum(fluxes)
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
