@@ -87,7 +87,7 @@ def calc_sq_dist(target_spec, model_spec):
     interp_model_flux = np.interp(target_spec[0], model_spec[0], model_spec[1])
     interp_model= np.vstack([np.copy(target_spec[0]),interp_model_flux])
     #print "interp_model.shape", interp_model.shape
-    norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(target_spec[1])
+    norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(interp_model[1])
     nan_remove = np.isinf(norm_difs)
     norm_difs= norm_difs[~nan_remove]
     dif = np.sum(norm_difs)/norm_difs.shape[0]
