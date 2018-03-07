@@ -4,9 +4,9 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
 do_oxygen= True #smaller mask when False (good for G130M setup)
-do_nitrogen= True
+do_nitrogen= False
 cos_refresh_rate = 0.032 #seconds
 lpos_list= [56132, 57063] #mjd dates of lifetime position changes (There's an LP-POS 4, so I need to add another one to this)
 #gain_change_list=Time( ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09'], scale='utc')
