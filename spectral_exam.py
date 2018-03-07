@@ -10,7 +10,7 @@ import config
 #from calcos import calcos
 from costools import timefilter
 import local_lightcurve as lc
-
+import spec_plot_tools as spt
 
 target_dir= sys.argv[1]
 
@@ -80,16 +80,21 @@ def run_spectral_exam(wave_limits):
         #print "fluxes",  fluxes
         arrshape= wavelengths.shape
         #unmasked= np.where((wavelengths < lyman[0]*np.ones(arrshape)) or ((wavelengths > lyman[1]*np.ones(arrshape)) and (wavelengths < oxygen[0])*np.ones(arrshape)) or (wavelengths > oxygen[1]*np.ones(arrshape)))
-        lower_mask = np.where(wavelengths > wave_min)
-        wavelengths= np.copy(wavelengths[lower_mask])
-        fluxes = np.copy(fluxes[lower_mask])
-        upper_mask= np.where(wavelengths < wave_max)
-        wavelengths= np.copy(wavelengths[upper_mask])
-        fluxes= np.copy(fluxes[upper_mask])
-        print "fluxes.shape: ", fluxes.shape
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
-        wavelengths, fluxes = remove_range(wavelengths, fluxes, config.nitrogen_mask)
+        target_spec= np.vstack([wavelengths, fluxes])
+        mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] #need to add the segment gap in the future
+        cleaned_spec = spt.clean_spectrum(target_spec, wave_min, wave_max, mask_list)
+        wavelengths= cleaned_spec[0]
+        fluxes= cleaned_spec[1]
+        #lower_mask = np.where(wavelengths > wave_min)
+        #wavelengths= np.copy(wavelengths[lower_mask])
+        #fluxes = np.copy(fluxes[lower_mask])
+        #upper_mask= np.where(wavelengths < wave_max)
+        #wavelengths= np.copy(wavelengths[upper_mask])
+        #fluxes= np.copy(fluxes[upper_mask])
+        #print "fluxes.shape: ", fluxes.shape
+        #wavelengths, fluxes = remove_range(wavelengths, fluxes, config.lyman_mask)
+        #wavelengths, fluxes = remove_range(wavelengths, fluxes, config.oxygen_mask)
+        #wavelengths, fluxes = remove_range(wavelengths, fluxes, config.nitrogen_mask)
         #fluxes= zero_mask(wavelengths, fluxes, config.lyman_mask)
         #fluxes= zero_mask(wavelengths, fluxes, config.oxygen_mask)
         
