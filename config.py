@@ -4,7 +4,7 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
 do_oxygen= True #smaller mask when False (good for G130M setup)
 do_nitrogen= True
 cos_refresh_rate = 0.032 #seconds

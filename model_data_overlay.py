@@ -22,23 +22,15 @@ min_wave= 1142
 max_wave= 1422
 #min_wave= 1180
 #max_wave= 1800
-#lyman_alpha = [1214,1217] #probably should put this into the config file as the masking for the spectroscopic fitting (but really this goes back to the need for individual text files by target for the various maskings that are required)
-#oxygen= [1300, 1308]
-#nitrogen=[1199,1201]
+scale_wave_range= [1400, 1420] 
+#scale_wave_range= [1700,1750] 
 lyman_alpha = config.lyman_mask
 oxygen= config.oxygen_mask
 nitrogen = config.nitrogen_mask
-#seg_gap = [1268,1298] #segment gap mask used for photometry for the G130M at 1291 Angs
-scale_wave_range= [1400, 1420] 
-#scale_wave_range= [1700,1750] 
-#scale factor to be just typed in for the moment but should be replaced by a function at some point that calculates it for you
 target_x1ds= glob(target_path+'*x1dsum.fits')
 target_file= target_x1ds[-1] #I only want the first one for now; when I eventually make this include all the visits for a given target I'll introduce some sort of function for combining them or whatever
 model_path= '/Users/BenKaiser/Desktop/DK_2010/'
 model_extension = '.dat'
-#scaling_coefficient= 5.2e21
-#wavelength range to consider for the scaling
-
 target_hdu= fits.open(target_file)
 cenwave=target_hdu[0].header['CENWAVE']
 grating = target_hdu[0].header['OPT_ELEM']
@@ -147,7 +139,9 @@ def chi_square_countours(teff_array, logg_array, dist_array):
     contour_array = np.vstack([teff_array,logg_array, dist_array])
     #plt.imshow(contour_array, aspect= 100)
     #plt.contour(teff_array, logg_array, dist_array)
-    plt.scatter(teff_array, logg_array, s= 1./dist_array*30, c = 1./dist_array*20)
+    marker_scale = 1/dist_array* dist_array.min() *40.
+    #plt.scatter(teff_array, logg_array, s= 1./dist_array*30, c = 1./dist_array*20)
+    plt.scatter(teff_array, logg_array, s=marker_scale, c = marker_scale)
     plt.plot(teff_array[min_index],logg_array[min_index], marker = '*', markersize = 14)
     plt.xlabel('T_eff')
     plt.ylabel('logg')
@@ -187,7 +181,7 @@ def run_model_grid(target_spec,target_err=None):
     scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
     model_spec[1]= model_spec[1]*scaling_coefficient
     
-    #plot_overlays(target_spec, model_spec, target_err)
+    plot_overlays(target_spec, model_spec, target_err)
     chi_square_countours(teff_array,logg_array, dist_array)
     
 run_model_grid(target_spec, target_err)
