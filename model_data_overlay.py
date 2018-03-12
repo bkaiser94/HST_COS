@@ -18,10 +18,10 @@ target_path = sys.argv[1]+'/' #the input should be the target name just like all
 teff= "013500" #hard coded for test target
 #logg= 8.0 #model values to pull (should be changed to be read from somewhere in the future)
 logg = "800" #hard coded for test target(it was 7.8 in the paper, but that is technically the same as this gridpoint to two sig figs)
-#min_wave= 1142
-#max_wave= 1422
-min_wave= 1180
-max_wave= 1800
+min_wave= 1142
+max_wave= 1422
+#min_wave= 1180
+#max_wave= 1800
 #lyman_alpha = [1214,1217] #probably should put this into the config file as the masking for the spectroscopic fitting (but really this goes back to the need for individual text files by target for the various maskings that are required)
 #oxygen= [1300, 1308]
 #nitrogen=[1199,1201]
@@ -29,11 +29,11 @@ lyman_alpha = config.lyman_mask
 oxygen= config.oxygen_mask
 nitrogen = config.nitrogen_mask
 #seg_gap = [1268,1298] #segment gap mask used for photometry for the G130M at 1291 Angs
-#scale_wave_range= [1400, 1420] 
-scale_wave_range= [1700,1750] 
+scale_wave_range= [1400, 1420] 
+#scale_wave_range= [1700,1750] 
 #scale factor to be just typed in for the moment but should be replaced by a function at some point that calculates it for you
 target_x1ds= glob(target_path+'*x1dsum.fits')
-target_file= target_x1ds[0] #I only want the first one for now; when I eventually make this include all the visits for a given target I'll introduce some sort of function for combining them or whatever
+target_file= target_x1ds[-1] #I only want the first one for now; when I eventually make this include all the visits for a given target I'll introduce some sort of function for combining them or whatever
 model_path= '/Users/BenKaiser/Desktop/DK_2010/'
 model_extension = '.dat'
 #scaling_coefficient= 5.2e21
@@ -47,7 +47,9 @@ print "grating (OPT_ELEM):", grating, "Centwave: ", target_hdu[0].header['CENWAV
 #exposure_time = target_hdu[0].header['EXPTIME']
 target_waves = np.copy(target_hdu[1].data['wavelength'].ravel())
 target_flux= np.copy(target_hdu[1].data['flux'].ravel())
+target_error = np.copy(target_hdu[1].data['ERROR'].ravel())
 target_spec= np.vstack([target_waves, target_flux])
+target_err = np.vstack([target_waves, target_error])
 #print target_spec.shape
 #print target_spec[0]
 
@@ -93,11 +95,17 @@ def get_scale_factor(target_spec, model_spec, wave_range):
     return scaling_factor
 ####
 
-def calc_sq_dist(target_spec, model_spec):
+def calc_sq_dist(target_spec, model_spec, error_spec = np.array([])):
     interp_model_flux = np.interp(target_spec[0], model_spec[0], model_spec[1])
     interp_model= np.vstack([np.copy(target_spec[0]),interp_model_flux])
     #print "interp_model.shape", interp_model.shape
-    norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(interp_model[1])
+    if error_spec.shape[0] != 0:
+        #norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(error_spec[1])
+        norm_difs = (interp_model[1]-target_spec[1])**2/np.float_(error_spec[1])**2
+        #norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(interp_model[1])
+    else:
+        print "no uncertainties provided"
+        norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(interp_model[1])
     #norm_difs = np.abs(interp_model[1]-target_spec[1])
 
     nan_remove = np.isinf(norm_difs)
@@ -107,8 +115,9 @@ def calc_sq_dist(target_spec, model_spec):
     return dif
     
 ###
-def plot_overlays(spec1, spec2):
+def plot_overlays(spec1, spec2, errors):
     plt.plot(spec1[0], spec1[1], label = 'observed')
+    #plt.errorbar(spec1[0],spec1[1], yerr = errors[1], label='observed')
     plt.plot(spec2[0], spec2[1], label= 'model', color = 'r')
     plt.legend(numpoints=1, fontsize=14, loc='best' )
     plt.xlabel(r'Wavelength ($\AA$)')
@@ -117,8 +126,32 @@ def plot_overlays(spec1, spec2):
     plt.show()
     return ''
 
+def make_model_params_arrays(list_model_files):
+    teff_list = []
+    logg_list = []
+    for file_path in list_model_files:
+        file_name = file_path.split('/')[-1] #takes the characters after the last slash
+        sub_string = file_name.split('da')[1] #the not-empty portion
+        divided_string = sub_string.split('_')
+        teff = int(divided_string[0] ) #the effective temperature for the model
+        logg = int(divided_string[1].split('.')[0])
+        teff_list.append(teff)
+        logg_list.append(logg)
+    teff_array = np.array(teff_list)
+    logg_array = np.array(logg_list)
+    return teff_array, logg_array
 
-        
+def chi_square_countours(teff_array, logg_array, dist_array):
+    min_index = np.argmin(dist_array)
+    print "Teff and logg min chi-squared values: ", teff_array[min_index],logg_array[min_index]
+    contour_array = np.vstack([teff_array,logg_array, dist_array])
+    #plt.imshow(contour_array, aspect= 100)
+    #plt.contour(teff_array, logg_array, dist_array)
+    plt.scatter(teff_array, logg_array, s= 1./dist_array*30, c = 1./dist_array*20)
+    plt.plot(teff_array[min_index],logg_array[min_index], marker = '*', markersize = 14)
+    plt.xlabel('T_eff')
+    plt.ylabel('logg')
+    plt.show()
 
 
 ##########
@@ -128,9 +161,10 @@ def plot_overlays(spec1, spec2):
 #target_spec= remove_range(target_spec[0], target_spec[1], seg_gap)
 #target_spec = sort_spectrum(target_spec)
 print os.getcwd()
-def run_model_grid(target_spec):
+def run_model_grid(target_spec,target_err=None):
     mask_list= [lyman_alpha]+[oxygen]+[seg_gap]+[nitrogen]
     target_spec = spt.clean_spectrum(target_spec, min_wave, max_wave, mask_list)
+    target_err = spt.clean_spectrum(target_err, min_wave, max_wave, mask_list)
     model_file_list = glob(model_path+'*'+model_extension)
     dist_list = []
     for model_file in model_file_list:
@@ -138,9 +172,9 @@ def run_model_grid(target_spec):
         model_spec= spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
         scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
         model_spec[1]=model_spec[1]*scaling_coefficient
-        new_dist = calc_sq_dist(target_spec, model_spec)
+        new_dist = calc_sq_dist(target_spec, model_spec, error_spec = target_err)
         dist_list.append(new_dist)
-       
+    teff_array, logg_array = make_model_params_arrays(model_file_list)
     dist_array = np.array(dist_list)
     for mod_file, dist_mod in zip(model_file_list, dist_list):
         print "model_file:", mod_file, "difference:", dist_mod
@@ -153,6 +187,7 @@ def run_model_grid(target_spec):
     scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
     model_spec[1]= model_spec[1]*scaling_coefficient
     
-    plot_overlays(target_spec, model_spec)
+    #plot_overlays(target_spec, model_spec, target_err)
+    chi_square_countours(teff_array,logg_array, dist_array)
     
-run_model_grid(target_spec)
+run_model_grid(target_spec, target_err)
