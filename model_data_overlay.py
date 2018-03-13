@@ -18,12 +18,12 @@ target_path = sys.argv[1]+'/' #the input should be the target name just like all
 teff= "013500" #hard coded for test target
 #logg= 8.0 #model values to pull (should be changed to be read from somewhere in the future)
 logg = "800" #hard coded for test target(it was 7.8 in the paper, but that is technically the same as this gridpoint to two sig figs)
-min_wave= 1142
-max_wave= 1422
-#min_wave= 1180
-#max_wave= 1800
-scale_wave_range= [1400, 1420] 
-#scale_wave_range= [1700,1750] 
+#min_wave= 1142
+#max_wave= 1422
+min_wave= 1180
+max_wave= 1800
+#scale_wave_range= [1400, 1420] 
+scale_wave_range= [1700,1750] 
 lyman_alpha = config.lyman_mask
 oxygen= config.oxygen_mask
 nitrogen = config.nitrogen_mask
@@ -135,7 +135,7 @@ def make_model_params_arrays(list_model_files):
 
 def chi_square_countours(teff_array, logg_array, dist_array):
     min_index = np.argmin(dist_array)
-    print "Teff and logg min chi-squared values: ", teff_array[min_index],logg_array[min_index]
+    print "Teff and logg min chi-squared values: ", teff_array[min_index],logg_array[min_index], "|chi-sq:", dist_array[min_index]
     contour_array = np.vstack([teff_array,logg_array, dist_array])
     #plt.imshow(contour_array, aspect= 100)
     #plt.contour(teff_array, logg_array, dist_array)
@@ -147,6 +147,11 @@ def chi_square_countours(teff_array, logg_array, dist_array):
     plt.ylabel('logg')
     plt.show()
 
+def calc_rdist(scale_factor):
+    dobs_over_dmod = 1./np.sqrt(scale_factor)
+    assumed_model_dist = 1e-2 #kpc
+    print "Target is ", dobs_over_dmod, "times farther away from us than the model"
+    print "d_target ~", dobs_over_dmod*assumed_model_dist, "kpc (assuming d_obs = "+str(assumed_model_dist *1000)+")"
 
 ##########
 #model_spec= get_model_spec(teff, logg)
@@ -180,8 +185,9 @@ def run_model_grid(target_spec,target_err=None):
     model_spec = spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
     scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
     model_spec[1]= model_spec[1]*scaling_coefficient
-    
+    calc_rdist(scaling_coefficient)
     plot_overlays(target_spec, model_spec, target_err)
     chi_square_countours(teff_array,logg_array, dist_array)
+    
     
 run_model_grid(target_spec, target_err)
