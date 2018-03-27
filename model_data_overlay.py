@@ -151,7 +151,7 @@ def calc_rdist(scale_factor):
     dobs_over_dmod = 1./np.sqrt(scale_factor)
     assumed_model_dist = 1e-2 #kpc
     print "Target is ", dobs_over_dmod, "times farther away from us than the model"
-    print "d_target ~", dobs_over_dmod*assumed_model_dist, "kpc (assuming d_obs = "+str(assumed_model_dist *1000)+")"
+    print "d_target ~", dobs_over_dmod*assumed_model_dist, "kpc (assuming d_obs = "+str(assumed_model_dist *1000)+"pc)"
 
 ##########
 #model_spec= get_model_spec(teff, logg)
@@ -168,7 +168,8 @@ def run_model_grid(target_spec,target_err=None):
     dist_list = []
     for model_file in model_file_list:
         model_spec = get_model_fromfile(model_file)
-        model_spec= spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
+        #model_spec= spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
+        model_spec= spt.clean_spectrum(model_spec, min_wave, max_wave, mask_list)
         scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
         model_spec[1]=model_spec[1]*scaling_coefficient
         new_dist = calc_sq_dist(target_spec, model_spec, error_spec = target_err)
@@ -182,12 +183,15 @@ def run_model_grid(target_spec,target_err=None):
     min_dist = dist_array[min_index]
     print "best fit model:", min_model
     model_spec= get_model_fromfile(min_model)
-    model_spec = spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
+    #model_spec = spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
+    model_spec= spt.clean_spectrum(model_spec, np.min(target_spec[0]), np.max(target_spec[0]), mask_list)
     scaling_coefficient= get_scale_factor(target_spec, model_spec, scale_wave_range)
     model_spec[1]= model_spec[1]*scaling_coefficient
     calc_rdist(scaling_coefficient)
     plot_overlays(target_spec, model_spec, target_err)
     chi_square_countours(teff_array,logg_array, dist_array)
+    #output_array = np.vstack([target_spec[0], target_spec[1], target_err[1]]).T
+    #np.savetxt( 'output_spectrum.csv',output_array, header = 'Wavelength, Flux (cgs units), Error', delimiter = ',')
     
     
 run_model_grid(target_spec, target_err)
