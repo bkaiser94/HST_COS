@@ -14,7 +14,8 @@ import local_lightcurve as lc
 import spec_plot_tools as spt
 
 
-def plot_all_x1d(target_dir, low_lim, high_lim):
+fp_pos_colors = ['magenta', 'r', 'g', 'b', 'k']
+def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
     wave_min= low_lim
     #lyman = [1208, 1225]
     #oxygen= [1295, 1312] #airglow wavelengths to be filtered according to lightcurve
@@ -44,6 +45,8 @@ def plot_all_x1d(target_dir, low_lim, high_lim):
         #for thing in hdu[1].data:
             #print "thing: ", thing
             #print thing['wavelength']
+        fppos = hdu[0].header['FPPOS']
+        fppos_color = fp_pos_colors[fppos]
         wavelengths= np.copy(hdu[1].data['wavelength'].ravel())
         print wavelengths.shape
         fluxes= np.copy(hdu[1].data['flux'].ravel())
@@ -81,7 +84,7 @@ def plot_all_x1d(target_dir, low_lim, high_lim):
  
         counter += 1
         #print "sum fluxes: ", np.sum(fluxes)
-        ax1.plot(wavelengths, fluxes, label=hdu[1].header['EXPSTART'])
+        ax1.plot(wavelengths, fluxes, label=hdu[1].header['EXPSTART'], color = fppos_color )
     for this_line in config.silicon_lines:
         if ((this_line >= wave_min) & (this_line <= wave_max)):
             ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
@@ -89,13 +92,15 @@ def plot_all_x1d(target_dir, low_lim, high_lim):
     flux_all= flux_all[1:, :] #remove the first row of zeros
     flux_med= np.nanmedian(flux_all, axis = 0)
     #flux_med= np.sum(flux_all, axis=0)
-    ax1.plot(plot_waves, flux_med, label= 'median combined spectra')
+    ax1.plot(plot_waves, flux_med, label= 'median combined spectra', color =fp_pos_colors[0])
     ax1.legend(numpoints=1, fontsize=14, loc='best' )
-    ax1.set_ylabel('Flux (normed)')
+    ax1.set_ylabel('Flux (cgs)')
     ax1.set_xlabel('Wavelength $(\AA)$')
     ax1.set_title(target_dir)
-    #ax1.set_yscale('log')
-    fig.tight_layout()
+    if log_scale:
+        ax1.set_yscale('log')
+        #bad_inds = np.where(
+    #fig.tight_layout()
     fig.savefig(target_dir+'x1dtruesum.pdf')
     plt.show()
     
@@ -105,7 +110,14 @@ if __name__ == '__main__':
     #lcfile= sys.argv[2]
     low_lim = int(sys.argv[2])
     high_lim = int(sys.argv[3])
+    log_scale = False
+    try:
+        scale_log = sys.argv[4]
+        if scale_log.lower() == 'true':
+            log_scale = True
+    except IndexError:
+        pass
     #period= float(sys.argv[3])
     #unit_arg = sys.argv[4]
     #nullstring = make_dual_plots(target_dir, stepsize, period, unit_arg)
-    nullstring = plot_all_x1d(target_dir, low_lim, high_lim)
+    nullstring = plot_all_x1d(target_dir, low_lim, high_lim, log_scale)
