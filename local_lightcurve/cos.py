@@ -354,10 +354,11 @@ def extract_index(hdu, x_start, x_end,
         cenwave=str(hdu[0].header['CENWAVE'])
         grating = str(hdu[0].header['OPT_ELEM'])
         try:
-            seg_gap = config.seg_gap_dict[grating][cenwave]
+            seg_gap_1 = config.seg_gap_dict[grating][cenwave]
+            seg_gap = (seg_gap_1[0], seg_gap_1[1]) #making a tuple
         except KeyError as error:
-            print error
-            print "No segment gap mask exists for OPT_ELEM " + grating + ' at ' + cenwave + ' A'
+            print (error)
+            print ("No segment gap mask exists for OPT_ELEM " + grating + ' at ' + cenwave + ' A')
             seg_gap = (w_end, w_start)
         #print ("OXYGEN MASKING CHANGED FROM DEFAULT!")
         #print ("Current oxygen mask: ", oxygen)
