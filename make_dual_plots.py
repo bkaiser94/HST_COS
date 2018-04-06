@@ -43,6 +43,14 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     counter= 0
     for dataset in glob(target_dir+ '/*x1dsum.fits'):
         hdu = fits.open(dataset)
+        cenwave=str(hdu[0].header['CENWAVE'])
+        grating = str(hdu[0].header['OPT_ELEM'])
+        try:
+            seg_gap = config.seg_gap_dict[str(grating)][str(cenwave)]
+        except KeyError as error:
+            print error
+            print "No segment gap mask for OPT_ELEM " + grating + ' at ' + cenwave + ' A'
+            seg_gap = [wave_max, wave_min]
         #print hdu[1]
         #print hdu[1]['FUVA']
         #print hdu[1].data[0]
@@ -56,7 +64,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #print "fluxes",  fluxes
         arrshape= wavelengths.shape
         target_spec= np.vstack([wavelengths, fluxes])
-        mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] #need to add the segment gap in the future
+        mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] +[seg_gap]#need to add the segment gap in the future
         cleaned_spec = spt.clean_spectrum(target_spec, wave_min, wave_max, mask_list)
         wavelengths= cleaned_spec[0]
         fluxes= cleaned_spec[1]
