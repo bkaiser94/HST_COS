@@ -350,6 +350,15 @@ def extract_index(hdu, x_start, x_end,
         lyman = (config.lyman_mask[0], config.lyman_mask[1])
         oxygen= (config.oxygen_mask[0], config.oxygen_mask[1])
         nitrogen = (config.nitrogen_mask[0], config.nitrogen_mask[1])
+        #segment-gap masking attempt
+        cenwave=str(hdu[0].header['CENWAVE'])
+        grating = str(hdu[0].header['OPT_ELEM'])
+        try:
+            seg_gap = config.seg_gap_dict[grating][cenwave]
+        except KeyError as error:
+            print error
+            print "No segment gap mask exists for OPT_ELEM " + grating + ' at ' + cenwave + ' A'
+            seg_gap = (w_end, w_start)
         #print ("OXYGEN MASKING CHANGED FROM DEFAULT!")
         #print ("Current oxygen mask: ", oxygen)
         #print ("Nitrogen-I mask: ", nitrogen)
@@ -359,6 +368,8 @@ def extract_index(hdu, x_start, x_end,
         lyman = (w_end, w_start)
         oxygen = (w_end, w_start)
         nitrogen = (w_end, w_start)
+        seg_gap = (w_end, w_start)
+    
 
     #data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
                           #(hdu[1].data['XCORR'] < x_end) &
@@ -376,6 +387,25 @@ def extract_index(hdu, x_start, x_end,
                           #((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
                            #(hdu[1].data['WAVELENGTH'] < oxygen[0]))
                           #)[0] #original version of this
+    #data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
+                          #(hdu[1].data['XCORR'] < x_end) &
+
+                          #(hdu[1].data['YCORR'] >= y_start) &
+                          #(hdu[1].data['YCORR'] < y_end) &
+
+                          #np.logical_not(hdu[1].data['DQ'] & sdqflags) &
+
+                          #((hdu[1].data['WAVELENGTH'] > w_start) &
+                           #(hdu[1].data['WAVELENGTH'] < w_end)) &
+
+                          #((hdu[1].data['WAVELENGTH'] > lyman[1])|
+                           #(hdu[1].data['WAVELENGTH'] < lyman[0])) &
+                          #((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
+                           #(hdu[1].data['WAVELENGTH'] < oxygen[0])) &
+                          #((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
+                           #(hdu[1].data['WAVELENGTH'] < nitrogen[0]))
+                          #)[0]
+
     data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
                           (hdu[1].data['XCORR'] < x_end) &
 
@@ -392,7 +422,9 @@ def extract_index(hdu, x_start, x_end,
                           ((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
                            (hdu[1].data['WAVELENGTH'] < oxygen[0])) &
                           ((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
-                           (hdu[1].data['WAVELENGTH'] < nitrogen[0]))
+                           (hdu[1].data['WAVELENGTH'] < nitrogen[0]))&
+                          ((hdu[1].data['WAVELENGTH'] > seg_gap[1])|
+                           (hdu[1].data['WAVELENGTH'] < seg_gap[0]))
                           )[0]
 
     return data_index
