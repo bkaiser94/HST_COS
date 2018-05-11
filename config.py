@@ -4,11 +4,11 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= False #smaller mask when False (good for G130M setup)
-do_nitrogen= False
+do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_oxygen= True #smaller mask when False (good for G130M setup)
+do_nitrogen= True
 cos_refresh_rate = 0.032 #seconds
-lpos_list= [56132, 57063] #mjd dates of lifetime position changes (There's an LP-POS 4, so I need to add another one to this)
+lpos_list= [56132, 57063, 58028] #mjd dates of lifetime position changes (added LP-POS 4)
 #gain_change_list=Time( ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09'], scale='utc')
 gain_change_list= ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09']
 #gain_change_list_mjd = gain_change_list.mjd
@@ -23,7 +23,7 @@ G130M_1291A_wave_list=[[1142, 1268],[1298,1422],[1142,1422], [1142,1200],[1250,1
 G130M_1300A_wave_list= [[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271]]
 G130M_1327A_wave_list= [[1182,1307],[1335,1460],[1182,1460]] 
 G140L_1105A_wave_list= [[1180,1300],[1300,1500],[1500,1700],[1180,1800]]
-G130M_1096A_wave_list= [[955, 1075],[1106,1232]]
+G130M_1096A_wave_list= [[955, 1075],[1106,1232], [955,1232]]
 wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list + G160M_1577A_wave_list+G130M_1327A_wave_list
 
 #wave_limit_list =  [[1250,1279]] #broad lines in target
@@ -45,6 +45,7 @@ else:
 silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309] #silicon lines in the UV
 
 seg_gap_dict={'G130M':{
+    '1096': [1072,1104],
     '1291':[1268,1298],
     '1300':[1278,1306],
     '1096':[1075,1106],

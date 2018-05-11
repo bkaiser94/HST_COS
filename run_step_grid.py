@@ -52,21 +52,24 @@ def get_wave_limits(target_dir):
 
 
 def run_step_grid(target_dir):
-    list_limits = get_wave_limits(target_dir)
-    for wave_limit in list_limits:
-        #try:
-            #outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
-        #except IndexError as error:
-            #print "\n******************************"
-            #print error
-            #print "******************************\n"
-        for stepsize in step_grid:
-            try:
-                outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)
-            except IndexError as error:
-                print "\n******************************"
-                print error
-                print "******************************\n"
+    try:
+        list_limits = get_wave_limits(target_dir)
+        for wave_limit in list_limits:
+            #try:
+                #outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
+            #except IndexError as error:
+                #print "\n******************************"
+                #print error
+                #print "******************************\n"
+            for stepsize in step_grid:
+                try:
+                    outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)
+                except IndexError as error:
+                    print "\n******************************"
+                    print error
+                    print "******************************\n"
+    except UnboundLocalError as error:
+        print error
     return ''
 
 
