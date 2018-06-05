@@ -40,6 +40,10 @@ def get_wave_limits(target_dir):
             list_limits= config.G130M_1096A_wave_list
         elif center_wave == 1327:
             list_limits=config.G130M_1327A_wave_list
+        elif center_wave == 1309:
+            list_limits = config.G130M_1309A_wave_list
+        elif center_wave== 1222:
+            list_limits = config.G130M_1222A_wave_list
     elif grating == "G140L":
         if center_wave == 1105:
             list_limits = config.G140L_1105A_wave_list
