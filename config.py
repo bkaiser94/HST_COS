@@ -5,7 +5,7 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
 do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= True #smaller mask when False (good for G130M setup)
+do_oxygen= True  #smaller mask when False (good for G130M setup)
 do_nitrogen= True
 
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
@@ -79,4 +79,5 @@ seg_gap_dict={'G130M':{
     '1096':[1075,1106],
     '1327':[1307,1335]},
              'G140L':{'1105': [1179,1180]}, 
-             'G160M': {'1600': [1569,1619]}}
+             'G160M': {'1600': [1569,1619],
+                       '1577': [1557,1578]}}

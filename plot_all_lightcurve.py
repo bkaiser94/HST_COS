@@ -47,8 +47,13 @@ def plot_stuff(inputfile):
     #times= Time(all_array['mjd'], format='mjd')
     times= np.copy(all_array['bmjd_tdb'])
     fluxes= np.copy(all_array['flux'])
-    gross = np.copy(all_array['gross']) #approximate poisson noise of the plot.
-    flux_err = np.sqrt(gross)/gross
+    try:
+        gross = np.copy(all_array['gross']) #approximate poisson noise of the plot.
+        flux_err = np.sqrt(gross)/gross
+    except ValueError as error:
+        print error
+        print "Flux uncertainties wrong"
+        flux_err= 0
     stepsize = inputfile.split('step')[-1]
     stepsize= float(stepsize.split('_')[0]) #hopefully the stepsize
     time_err = stepsize/2./second_per_mjd

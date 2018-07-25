@@ -13,7 +13,7 @@ import config
 import os
 from glob import glob
 from astropy.io import fits
-
+from astropy import convolution as conv
 import config
 import spec_plot_tools as spt
 
@@ -22,8 +22,8 @@ target2 = sys.argv[2]
 
 #scaling_range = [1700, 1750]
 #scaling_range = [1230, 1260] #Nitrogen V
-scaling_range = [1380, 1420] #Si IV
-#scaling_range = [1540, 1560] #C IV
+#scaling_range = [1380, 1420] #Si IV
+scaling_range = [1540, 1560] #C IV
 #min_wave = 1180
 min_wave = 1110
 max_wave = 1800
@@ -59,11 +59,16 @@ def retrieve_target_spec(target_name):
 spec1, error1 = retrieve_target_spec(target1)
 spec2, error2 = retrieve_target_spec(target2)
 
+#conv_kernel = conv.Box1DKernel(2, mode = 'oversample')
+#spec2[1] = conv.convolve(spec2[1], conv_kernel)
+#spec1[1] = conv.convolve(spec1[1], conv_kernel)
+
 
 #scale_factor= spt.get_scale_factor(spec1, spec2, scaling_range)
 scale_factor = spt.get_scale_factor_max(spec1, spec2, scaling_range)
 
 spec2[1] = spec2[1]*scale_factor
+
 
 
 plt.plot(spec2[0], spec2[1], label = target2+str(' (rescaled)'), color = 'r')
@@ -75,4 +80,31 @@ plt.legend()
 plt.show()
 
 
+interp2 = np.interp(spec1[0], spec2[0], spec2[1])
+interp1 = np.interp(spec2[0], spec1[0], spec1[1])
 
+plt.plot(spec1[0], interp2)
+plt.plot(spec1[0], spec1[1])
+plt.show()
+
+plt.plot(spec2[0], interp1)
+plt.plot(spec2[0], spec2[1])
+plt.show()
+
+
+#plt.plot(spec1[0], spec1[1], label= target1, color = 'b')
+plt.plot(spec1[0], spec1[1]/interp2, label=target1 + '/'  +target2)
+spt.plot_emission_lines(spec1)
+
+#plt.title('COS Spectra; ' + target1 + '/ ' + target2 + ' in ' + str(scaling_range[0]) + '-' + str(scaling_range[1]) + r' $\AA$')
+#plt.legend()
+#plt.show()
+
+
+plt.plot(spec2[0], spec2[1]/interp1, label = target2 + '/' + target1)
+spt.plot_emission_lines(spec2)
+plt.axhline(y=1, color = 'k', alpha = 0.5)
+
+#plt.title('COS Spectra; ' + target2 + '/ ' + target1 + ' in ' + str(scaling_range[0]) + '-' + str(scaling_range[1]) + r' $\AA$')
+plt.legend()
+plt.show()
