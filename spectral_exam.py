@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+from __future__ import division
 
 import numpy as np
 import os
@@ -137,7 +137,7 @@ def run_spectral_exam(wave_limits):
         counter += 1
         #print("sum fluxes: ", np.sum(fluxes))
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
-    num_segs= plot_waves.shape[0] / max_points_per_window +1
+    num_segs= plot_waves.shape[0] // max_points_per_window +1
 
     #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
     flux_all= flux_all[1:, :] #remove the first row of zeros
@@ -166,7 +166,7 @@ def run_spectral_exam(wave_limits):
     plot_waves= plot_waves.reshape(num_segs, max_points_per_window)
     flux_normed= flux_normed.reshape(num_segs, max_points_per_window)
 
-    num_mults_42= num_segs/42 #42 is the maximum number of subplots allowed
+    num_mults_42= num_segs//42 #42 is the maximum number of subplots allowed
 
     figsaves= 0
     if num_segs > 42:
