@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 import os
 from glob import glob
@@ -33,7 +36,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
 
     for dataset in glob(target_dir+ '/*x1dsum.fits'):
         hdu = fits.open(dataset)
-        print dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME']    
+        print(dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME'])
 
     fig = plt.figure(figsize=(20,9))
     #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
@@ -48,20 +51,20 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         try:
             seg_gap = config.seg_gap_dict[str(grating)][str(cenwave)]
         except KeyError as error:
-            print error
-            print "No segment gap mask for OPT_ELEM " + grating + ' at ' + cenwave + ' A'
+            print(error)
+            print("No segment gap mask for OPT_ELEM " + grating + ' at ' + cenwave + ' A')
             seg_gap = [wave_max, wave_min]
-        #print hdu[1]
-        #print hdu[1]['FUVA']
-        #print hdu[1].data[0]
-        #print hdu[1].data.shape
+        #print(hdu[1])
+        #print(hdu[1]['FUVA'])
+        #print(hdu[1].data[0])
+        #print(hdu[1].data.shape)
         #for thing in hdu[1].data:
-            #print "thing: ", thing
-            #print thing['wavelength']
+            #print("thing: ", thing)
+            #print(thing['wavelength'])
         wavelengths= np.copy(hdu[1].data['wavelength'].ravel())
-        print wavelengths.shape
+        print(wavelengths.shape)
         fluxes= np.copy(hdu[1].data['flux'].ravel())
-        #print "fluxes",  fluxes
+        #print("fluxes",  fluxes)
         arrshape= wavelengths.shape
         target_spec= np.vstack([wavelengths, fluxes])
         mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] +[seg_gap]#need to add the segment gap in the future
@@ -69,18 +72,18 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         wavelengths= cleaned_spec[0]
         fluxes= cleaned_spec[1]
         
-        print "fluxes.shape: ", fluxes.shape
-        print "wavelengths.shape" , wavelengths.shape
+        print("fluxes.shape: ", fluxes.shape)
+        print("wavelengths.shape" , wavelengths.shape)
         
         if counter == 0:
             flux_all= np.array([np.zeros(fluxes.shape)])
-            print "flux_all.shape: ", flux_all.shape
+            print("flux_all.shape: ", flux_all.shape)
             plot_waves = wavelengths
         try:
             flux_all = np.append(flux_all, [fluxes], axis=0)
-            print flux_all.shape
+            print(flux_all.shape)
         except ValueError as error:
-            print error
+            print(error)
             shape_dif = flux_all.shape[1] - fluxes.shape[0]
             if shape_dif > 0 :
                 padarray= np.zeros(shape_dif)
@@ -88,10 +91,10 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
                 flux_all = np.append(flux_all, [fluxes_pad], axis=0)
             elif shape_dif < 0 :
                 flux_all= np.append(flux_all,[fluxes[:shape_dif]], axis=0)
-                print "truncating new spectrum to mach previous dimensions"
+                print("truncating new spectrum to mach previous dimensions")
             
         counter += 1
-        #print "sum fluxes: ", np.sum(fluxes)
+        #print("sum fluxes: ", np.sum(fluxes))
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
     #for this_line in config.silicon_lines:
         #ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
@@ -99,7 +102,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         for this_line in config.silicon_lines:
             if ((this_line >= wave_min) & (this_line <= wave_max)):
                 ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
-        print flux_all.shape
+        print(flux_all.shape)
         flux_all= flux_all[1:, :] #remove the first row of zeros
         flux_med= np.nanmedian(flux_all, axis = 0)
         #ax1.plot(plot_waves, flux_med/np.nanmean(flux_med), label= 'median combined averaged spectra')
@@ -116,22 +119,22 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 
         #if unit_arg.startswith('s'):
-            #print "period in seconds"
+            #print("period in seconds")
             #time_converter = second_per_mjd
             #time_string = 's'
             
         #elif unit_arg.startswith('h'):
-            #print "period in hours"
+            #print("period in hours")
             #time_converter= second_per_mjd/3600.
             #time_string = 'hrs'
 
         #elif unit_arg.startswith('d'):
-            #print 'period in days'
+            #print('period in days')
             #time_converter = 1.
             #time_string = 'days'
 
         #elif unit_arg.startswith('m'):
-            #print 'period in minutes'
+            #print('period in minutes')
             #time_converter = second_per_mjd/60.
             #time_string = 'min'
             
@@ -200,8 +203,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         fig.savefig(dest_dir+ target_dir + '_dual_plot_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
         return ''
     except UnboundLocalError as error:
-        print error
-        print "guess we're just not working or something"
+        print(error)
+        print("guess we're just not working or something")
         return ""
 
 ######################3

@@ -57,7 +57,7 @@ def retrieve_target_spec(target_name):
     lyman_alpha = config.lyman_mask
     oxygen= config.oxygen_mask
     nitrogen = config.nitrogen_mask
-    print "grating (OPT_ELEM):", grating, "Centwave: ", target_hdu[0].header['CENWAVE']
+    print("grating (OPT_ELEM):", grating, "Centwave: ", target_hdu[0].header['CENWAVE'])
     #exposure_time = target_hdu[0].header['EXPTIME']
     target_waves = np.copy(target_hdu[1].data['wavelength'].ravel())
     target_flux= np.copy(target_hdu[1].data['flux'].ravel())

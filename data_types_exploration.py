@@ -3,6 +3,8 @@ Test the different methods of producing the 'correct' bin edges for binning the 
 
 """
 
+from __future__ import print_function
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,9 +26,9 @@ end = np.max(original_timestamps)
 def get_step(step):
     instep = step
     step = step - (step%config.cos_refresh_rate) #method of calculating the stepsize that conforms to the native time bins
-    #print "input step: ", instep
-    #print "calculated step: ", step
-    #print "difference: ", (instep-step)
+    #print("input step: ", instep)
+    #print("calculated step: ", step)
+    #print("difference: ", (instep-step))
     return step
 
 def calc_arange1(step):
@@ -129,8 +131,8 @@ def hist_tests(instep):
     plt.title('arange3')
     plt.show()
     plt.scatter(np.arange(0,hist_arange2.shape[0],1),hist_arange2)
-    print "poisson noise expected: ", np.sqrt(np.mean(hist_arange2))
-    print "standard deviation calculated: ", np.std(hist_arange2)
+    print("poisson noise expected: ", np.sqrt(np.mean(hist_arange2)))
+    print("standard deviation calculated: ", np.std(hist_arange2))
     plt.title('arange2')
     plt.show()
     plt.scatter(np.arange(0,hist_arange4.shape[0],1),hist_arange4)
@@ -178,7 +180,7 @@ def relative_error_calc(times, test_num= 2):
     textheader= 'time\tpoisson\tstd_dev'
     np.savetxt('arange'+str(test_num)+'_relative_errors.txt', combined_array, delimiter= '\t', header = textheader)
     for row in combined_array:
-        print row
+        print(row)
 
     plt.scatter(all_times, all_poisson, label= 'poisson')
     plt.scatter(all_times, all_sigma, label = 'std deviation', color = 'r')
@@ -196,12 +198,12 @@ relative_error_calc(times, test_num =2)
 #run_tests(config.cos_refresh_rate)
 #hist_tests(config.cos_refresh_rate)
 #hist_tests(0.1)
-#print 1
+#print(1)
 #hist_tests(1)
-#print 1.1
+#print(1.1)
 #hist_tests(1.1)
-#print 0.64
+#print(0.64)
 #hist_tests(0.64)
 
 #for value in [config.cos_refresh_rate, np.float32(config.cos_refresh_rate), 1]:
-    #print np.min(np.abs(original_timestamps - get_step(value)))
+    #print(np.min(np.abs(original_timestamps - get_step(value))))

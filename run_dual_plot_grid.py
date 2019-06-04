@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 from glob import glob
 import os
@@ -12,8 +15,8 @@ def run_dual_plot_grid(target_dir, stepsize):
         try:
             nullstring = make_dual_plots(target_dir, stepsize,  wave_limits= limit)
         except IndexError as error:
-            print "Wavelengths: ", limit
-            print error
+            print("Wavelengths: ", limit)
+            print(error)
 
 
 

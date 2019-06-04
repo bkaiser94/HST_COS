@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 import sys
 import run_dual_plot_grid as rdpg
@@ -13,4 +16,4 @@ for target in target_directories:
         try:
             rdpg.run_dual_plot_grid(target[:-1], stepsize) #removes the slash at the end of the directory name
         except IOError as error:
-            print error
+            print(error)

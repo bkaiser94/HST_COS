@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 import os
 from glob import glob
@@ -21,22 +24,22 @@ second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extr
 phase_bins = 120. #number of bins to do with in-phase binning
 
 if unit_arg.startswith('s'):
-    print "period in seconds"
+    print("period in seconds")
     time_converter = second_per_mjd
     time_string = 's'
     
 elif unit_arg.startswith('h'):
-    print "period in hours"
+    print("period in hours")
     time_converter= second_per_mjd/3600.
     time_string = 'hrs'
 
 elif unit_arg.startswith('d'):
-    print 'period in days'
+    print('period in days')
     time_converter = 1.
     time_string = 'days'
 
 elif unit_arg.startswith('m'):
-    print 'period in minutes'
+    print('period in minutes')
     time_converter = second_per_mjd/60.
     time_string = 'min'
     
@@ -53,7 +56,7 @@ def bin_in_phase(fold_times, flux):
         condition  = (fold_times >= bin_edges[i]).astype(int) * (fold_times <= bin_edges[i+1]).astype(int) #array of zeros and ones for values that are in bounds
         good_vals = np.where(condition> 0)
         good_flux = flux[good_vals]
-        print good_flux.shape[0]
+        print(good_flux.shape[0])
         std_err = np.std(good_flux)
         bin_flux = np.mean(good_flux)
         binned_flux.append(bin_flux)
@@ -72,7 +75,7 @@ times= (times - times[0]) *time_converter
 #fold_times = times%period
 fold_times= np.mod(times, period)
 
-print "Base time unit:", times[1]-times[0], times[2]-times[1], times[3]-times[2]
+print("Base time unit:", times[1]-times[0], times[2]-times[1], times[3]-times[2])
 
 
 plt.figure(figsize= (20,9))
@@ -85,7 +88,7 @@ plt.title(inputfile + ' Period fold'+ str(period) + ' ' + time_string)
 plt.show()
 
 binned_times, binned_flux, binned_std = bin_in_phase(fold_times, fluxes)
-print binned_std
+print(binned_std)
 plt.figure(figsize= (20,9))
 #plt.axhline(y= 1, linestyle= '-', color = 'm', xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)
 plt.axhline(y= 0,linestyle = '-', color = 'g' , xmin = 0, xmax = 100000, linewidth = 1, alpha = 0.2)

@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import config
@@ -10,7 +13,7 @@ def trim_spec(input_spec, min_wave, max_wave):
     trimmed_waves= trimmed_waves[upper_indices]
     trimmed_flux = trimmed_flux[upper_indices]
     trimmed_spec= np.vstack([trimmed_waves, trimmed_flux])
-    #print trimmed_spec.shape
+    #print(trimmed_spec.shape)
     return trimmed_spec
 
 def remove_range(input_spec, bound_list):
@@ -67,7 +70,7 @@ def get_med_val(input_spec, wave_range):
     med_index = np.where(sub_spec[1] == med_flux)[0]
     med_wave = sub_spec[0, med_index][0]
     med_val =[med_wave, med_flux]
-    #print med_val
+    #print(med_val)
     return med_val
 
 def make_continuum(input_spec, continuum_list= []):

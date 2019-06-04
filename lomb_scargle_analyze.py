@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 import os
 from glob import glob
@@ -25,7 +28,7 @@ times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 
 #times= times * u.day
 #times= times.to(u.s)
-#print times
+#print(times)
 #period_range = np.array([10,20]) #hours
 #period_range= [100, 1400] #seconds
 #period_range= [70., 1400.]
@@ -35,9 +38,9 @@ period_range= [2*second_per_mjd, 4000*second_per_mjd]
 #period_range= period_range *3600. #seconds
 frequency_range= np.linspace(1./period_range[1],1./period_range[0], num_freq)
 frequency = frequency_range
-print "max freq: " , np.nanmax(frequency)
-print "freq min: ", np.nanmin(frequency)
-print "freq step: ", frequency[1]-frequency[0]
+print("max freq: " , np.nanmax(frequency))
+print("freq min: ", np.nanmin(frequency))
+print("freq step: ", frequency[1]-frequency[0])
 #frequency, power = LombScargle(times, all_array['flux']).autopower()
 #power = LombScargle(times, all_array['flux']).power(frequency_range)
 power = LombScargle(times, all_array['flux']).power(frequency)
@@ -50,20 +53,20 @@ best_index= np.argmax(clean_power)
 best_power= clean_power[best_index]
 best_freq= clean_frequency[best_index]
 
-#print "best_freq: ", best_freq, best_freq/86400.
-print "best_freq: ", best_freq, "Hz"
-#print "period: ", 1./best_freq*86400., "s"
-print "Best period: ", 1./best_freq, "s"
-print "best_power: ", best_power
+#print("best_freq: ", best_freq, best_freq/86400.)
+print("best_freq: ", best_freq, "Hz")
+#print("period: ", 1./best_freq*86400., "s")
+print("Best period: ", 1./best_freq, "s")
+print("best_power: ", best_power)
 
 sorted_indices= np.argsort(clean_power)
 sorted_power= clean_power[sorted_indices]
 sorted_freq= clean_frequency[sorted_indices]
 
-print "top 10 frequencies: "
+print("top 10 frequencies: ")
 counter= 1
 for top_freq in reversed(sorted_freq[-10:]):
-    print top_freq, "Hz\tPeriod: ", 1./top_freq, "s\t""\t=", 1./top_freq/second_per_mjd, "d\t", "Power: ", sorted_power[counter*-1]
+    print(top_freq, "Hz\tPeriod: ", 1./top_freq, "s\t""\t=", 1./top_freq/second_per_mjd, "d\t", "Power: ", sorted_power[counter*-1])
     counter+=1
 
 

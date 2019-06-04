@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
@@ -35,15 +38,15 @@ target_hdu= fits.open(target_file)
 cenwave=target_hdu[0].header['CENWAVE']
 grating = target_hdu[0].header['OPT_ELEM']
 seg_gap = config.seg_gap_dict[str(grating)][str(cenwave)]
-print "grating (OPT_ELEM):", grating, "Centwave: ", target_hdu[0].header['CENWAVE']
+print("grating (OPT_ELEM):", grating, "Centwave: ", target_hdu[0].header['CENWAVE'])
 #exposure_time = target_hdu[0].header['EXPTIME']
 target_waves = np.copy(target_hdu[1].data['wavelength'].ravel())
 target_flux= np.copy(target_hdu[1].data['flux'].ravel())
 target_error = np.copy(target_hdu[1].data['ERROR'].ravel())
 target_spec= np.vstack([target_waves, target_flux])
 target_err = np.vstack([target_waves, target_error])
-#print target_spec.shape
-#print target_spec[0]
+#print(target_spec.shape)
+#print(target_spec[0])
 
 
 #function to trim the model plot to limit it to the range of the target's spectrum
@@ -63,7 +66,7 @@ def get_model_spec(fitted_teff, fitted_logg):
     model_file= glob(model_file)[0]
     model_spec= np.genfromtxt(model_file)
     model_spec= model_spec.T #transpose because numpy is weird on the axes it reads in.
-    #print "model_spec.shape:",  model_spec.shape
+    #print("model_spec.shape:",  model_spec.shape)
     return model_spec
 
 def get_model_fromfile(model_file):
@@ -90,13 +93,13 @@ def get_scale_factor(target_spec, model_spec, wave_range):
 def calc_sq_dist(target_spec, model_spec, error_spec = np.array([])):
     interp_model_flux = np.interp(target_spec[0], model_spec[0], model_spec[1])
     interp_model= np.vstack([np.copy(target_spec[0]),interp_model_flux])
-    #print "interp_model.shape", interp_model.shape
+    #print("interp_model.shape", interp_model.shape)
     if error_spec.shape[0] != 0:
         #norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(error_spec[1])
         norm_difs = (interp_model[1]-target_spec[1])**2/np.float_(error_spec[1])**2
         #norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(interp_model[1])
     else:
-        print "no uncertainties provided"
+        print("no uncertainties provided")
         norm_difs = np.abs(interp_model[1]-target_spec[1])/np.float_(interp_model[1])
     #norm_difs = np.abs(interp_model[1]-target_spec[1])
 
@@ -135,7 +138,7 @@ def make_model_params_arrays(list_model_files):
 
 def chi_square_countours(teff_array, logg_array, dist_array):
     min_index = np.argmin(dist_array)
-    print "Teff and logg min chi-squared values: ", teff_array[min_index],logg_array[min_index], "|chi-sq:", dist_array[min_index]
+    print("Teff and logg min chi-squared values: ", teff_array[min_index],logg_array[min_index], "|chi-sq:", dist_array[min_index])
     contour_array = np.vstack([teff_array,logg_array, dist_array])
     #plt.imshow(contour_array, aspect= 100)
     #plt.contour(teff_array, logg_array, dist_array)
@@ -150,8 +153,8 @@ def chi_square_countours(teff_array, logg_array, dist_array):
 def calc_rdist(scale_factor):
     dobs_over_dmod = 1./np.sqrt(scale_factor)
     assumed_model_dist = 1e-2 #kpc
-    print "Target is ", dobs_over_dmod, "times farther away from us than the model"
-    print "d_target ~", dobs_over_dmod*assumed_model_dist, "kpc (assuming d_obs = "+str(assumed_model_dist *1000)+"pc)"
+    print("Target is ", dobs_over_dmod, "times farther away from us than the model")
+    print("d_target ~", dobs_over_dmod*assumed_model_dist, "kpc (assuming d_obs = "+str(assumed_model_dist *1000)+"pc)")
 
 ##########
 #model_spec= get_model_spec(teff, logg)
@@ -159,7 +162,7 @@ def calc_rdist(scale_factor):
 #target_spec= remove_range(target_spec[0], target_spec[1], oxygen)
 #target_spec= remove_range(target_spec[0], target_spec[1], seg_gap)
 #target_spec = sort_spectrum(target_spec)
-print os.getcwd()
+print(os.getcwd())
 def run_model_grid(target_spec,target_err=None):
     mask_list= [lyman_alpha]+[oxygen]+[seg_gap]+[nitrogen]
     target_spec = spt.clean_spectrum(target_spec, min_wave, max_wave, mask_list)
@@ -177,11 +180,11 @@ def run_model_grid(target_spec,target_err=None):
     teff_array, logg_array = make_model_params_arrays(model_file_list)
     dist_array = np.array(dist_list)
     for mod_file, dist_mod in zip(model_file_list, dist_list):
-        print "model_file:", mod_file, "difference:", dist_mod
+        print("model_file:", mod_file, "difference:", dist_mod)
     min_index = np.argmin(dist_list)
     min_model = model_file_list[min_index]
     min_dist = dist_array[min_index]
-    print "best fit model:", min_model
+    print("best fit model:", min_model)
     model_spec= get_model_fromfile(min_model)
     #model_spec = spt.trim_spec(model_spec, np.min(target_spec[0]), np.max(target_spec[0]))
     model_spec= spt.clean_spectrum(model_spec, np.min(target_spec[0]), np.max(target_spec[0]), mask_list)

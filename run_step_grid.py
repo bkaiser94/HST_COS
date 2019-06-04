@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 import numpy as np
 from glob import glob
 import os
@@ -62,18 +65,18 @@ def run_step_grid(target_dir):
             #try:
                 #outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
             #except IndexError as error:
-                #print "\n******************************"
-                #print error
-                #print "******************************\n"
+                #print ("\n******************************")
+                #print (error)
+                #print ("******************************\n")
             for stepsize in step_grid:
                 try:
                     outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)
                 except IndexError as error:
-                    print "\n******************************"
-                    print error
-                    print "******************************\n"
+                    print("\n******************************")
+                    print(error)
+                    print("******************************\n")
     except UnboundLocalError as error:
-        print error
+        print(error)
     return ''
 
 
