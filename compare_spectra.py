@@ -20,13 +20,27 @@ import spec_plot_tools as spt
 target1 = sys.argv[1]
 target2 = sys.argv[2]
 
+scaling_range_dict = {"CIV":  [1540, 1560],
+                      "Si":  [1380, 1420],
+                      "N": [1230, 1260],
+                      "CIII": [1170,  1180]}
+
+scaling_range = scaling_range_dict[sys.argv[3]]
 #scaling_range = [1700, 1750]
 #scaling_range = [1230, 1260] #Nitrogen V
 #scaling_range = [1380, 1420] #Si IV
-scaling_range = [1540, 1560] #C IV
+#scaling_range = [1540, 1560] #C IV
 #min_wave = 1180
 min_wave = 1110
 max_wave = 1800
+
+def chi_square(spec1,spec2, err1, err2):
+    """
+    Should get a chi-square value by comparing one spectrum to the other.
+    """
+    interp2 = np.interp(spec1[0], spec2[0], spec2[1])
+    interp1 = np.interp(spec2[0], spec1[0], spec1[1])
+    return
 
 def retrieve_target_spec(target_name):
     """
@@ -59,10 +73,34 @@ def retrieve_target_spec(target_name):
 spec1, error1 = retrieve_target_spec(target1)
 spec2, error2 = retrieve_target_spec(target2)
 
+plt.plot(spec2[0], spec2[1], label = target2, color = 'r')
+plt.plot(spec1[0], spec1[1], label= target1, color = 'b')
+spt.plot_emission_lines(spec1)
+
+plt.title('COS Spectra; NOT RESCALED')
+plt.legend()
+plt.show()
 #conv_kernel = conv.Box1DKernel(2, mode = 'oversample')
 #spec2[1] = conv.convolve(spec2[1], conv_kernel)
 #spec1[1] = conv.convolve(spec1[1], conv_kernel)
 
+plt.plot(spec2[0], spec2[1]/error2[1], label = target2, color = 'r')
+plt.plot(spec1[0], spec1[1]/error1[1], label= target1, color = 'b')
+spt.plot_emission_lines(spec1)
+
+plt.title('COS Spectra; NOT RESCALED, SNR')
+plt.legend()
+plt.ylabel('S/N')
+plt.show()
+
+
+plt.errorbar(spec2[0], spec2[1], yerr=error2[1], label = target2, color = 'r')
+plt.errorbar(spec1[0], spec1[1], yerr=error1[1], label= target1, color = 'b')
+spt.plot_emission_lines(spec1)
+
+plt.title('COS Spectra; NOT RESCALED')
+plt.legend()
+plt.show()
 
 #scale_factor= spt.get_scale_factor(spec1, spec2, scaling_range)
 scale_factor = spt.get_scale_factor_max(spec1, spec2, scaling_range)
