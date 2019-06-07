@@ -6,7 +6,7 @@ import sys
 import run_dual_plot_grid as rdpg
 
 #target_directories = np.genfromtxt('target_dirs.txt', 'str')
-target_directories = np.genfromtxt('target_for_lc.txt', 'str')
+target_directories = np.genfromtxt('targets_for_lc.txt', 'str')
 
 
 stepsize = int(sys.argv[1])
