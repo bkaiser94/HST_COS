@@ -4,9 +4,9 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= False  #smaller mask when False (good for G130M setup); actually it's currenlty (2018-11-04) a non-mask
-do_nitrogen= False
+do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+do_oxygen= True  #smaller mask when False (good for G130M setup); actually it's currenlty (2018-11-04) a non-mask
+do_nitrogen= True
 
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
 lyman_deg = 1
