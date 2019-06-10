@@ -46,9 +46,18 @@ def plot_events(times):
             plt.axvline(x= lpos,linestyle = '-', color = 'k' , ymin = -10, ymax = 10, linewidth = 1, alpha = 0.8)
 
 def plot_stuff(inputfile):
-    all_array = np.genfromtxt(inputfile, names=True)
+    try:
+        all_array = np.genfromtxt(inputfile, names=True, skip_header=1)
+        times= np.copy(all_array['bmjd_tdb'])
+    except ValueError as error:
+        print("ValueError:",error)
+        print("probably due to this lightcurve being before the addition of comments,\nso now we won't skip any lines.")
+        all_array = np.genfromtxt(inputfile, names=True)
+        times= np.copy(all_array['bmjd_tdb'])
+        
+    #all_array = np.genfromtxt(inputfile, names=True)
     #times= Time(all_array['mjd'], format='mjd')
-    times= np.copy(all_array['bmjd_tdb'])
+    #times= np.copy(all_array['bmjd_tdb'])
     fluxes= np.copy(all_array['flux'])
     try:
         gross = np.copy(all_array['gross']) #approximate poisson noise of the plot.

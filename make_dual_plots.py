@@ -139,10 +139,17 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
             #time_string = 'min'
             
 
-        all_array = np.genfromtxt(lcfile, names=True)
-        #times= Time(all_array['mjd'], format='mjd')
-        #times= np.copy(all_array['mjd'])
-        times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
+        #all_array = np.genfromtxt(lcfile, names=True)
+        try:
+            all_array = np.genfromtxt(lcfile, names=True, skip_header=1)
+            #times= Time(all_array['mjd'], format='mjd')
+            #times= np.copy(all_array['mjd'])
+            times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
+        except ValueError as error:
+            print("ValueError:",error)
+            print("probably due to this lightcurve being before the addition of comments,\nso now we won't skip any lines.")
+            all_array = np.genfromtxt(lcfile, names=True)
+            times= Time(all_array['bmjd_tdb'], format = 'mjd', scale = 'tdb').mjd
         fluxes= np.copy(all_array['flux'])
         gross= np.copy(all_array['gross'])
         flux_err= np.sqrt(gross)/gross

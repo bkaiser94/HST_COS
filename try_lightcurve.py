@@ -16,7 +16,7 @@ from costools import timefilter
 #import lightcurve as lc
 import local_lightcurve as lc #I have created a second directory within here that I could edit the 
 
-
+import config
 #target_dir = sys.argv[1] + '/'
 #stepsize = int(sys.argv[2]) 
 second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
@@ -150,6 +150,8 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     bmjd_array= (time_mjd.tdb + ltt_bary).tdb.mjd #barycentric correction
     time_sec= (bmjd_array- bmjd_array[0])*second_per_mjd #This should correctly output the seconds times in the BMJD_tdb version
     textheader= 'mjd\tgross\tflux\ttime(s)(bmjd_tdb)\tbmjd_tdb'
+    comment_string= 'mask_deg='+str(config.mask_deg) #20190610
+    textheader=comment_string+'\n' + textheader #20190610
     #textcomment= 'step = ' + str(stepsize)
     if __name__ != "__main__":
         dest_dir = target_dir[:-1] + "_grid_lightcurves/"
@@ -165,7 +167,8 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     out_array= out_array.T
     print(out_array.shape)
     print("writing textfile")
-    np.savetxt(target_dir[:-1]+'_lightcurve_step' + str(stepsize)+'_wlim'+ str(wlim[0])+',' + str(wlim[1])+'.txt', out_array, delimiter = '\t', header = textheader)
+    #np.savetxt(target_dir[:-1]+'_lightcurve_step' + str(stepsize)+'_wlim'+ str(wlim[0])+',' + str(wlim[1])+'.txt', out_array, delimiter = '\t', header = textheader)
+    np.savetxt(target_dir[:-1]+'_lightcurve_step' + str(stepsize)+'_wlim'+ str(wlim[0])+',' + str(wlim[1])+'.txt', out_array, delimiter = '\t', header = textheader) #20190610
     if __name__ != '__main__':
         os.chdir('../')
     print(os.getcwd())

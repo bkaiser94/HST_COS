@@ -64,11 +64,19 @@ def bin_in_phase(fold_times, flux):
         binned_times.append(np.mean([bin_edges[i], bin_edges[i+1]]))
     return np.array(binned_times), np.array(binned_flux), np.array(binned_std)
         
+try:
+    all_array = np.genfromtxt(inputfile, names=True, skip_header=1)
+    times= np.copy(all_array['bmjd_tdb'])
+except ValueError as error:
+    print("ValueError:",error)
+    print("probably due to this lightcurve being before the addition of comments,\nso now we won't skip any lines.")
+    all_array = np.genfromtxt(inputfile, names=True)
+    times= np.copy(all_array['bmjd_tdb'])
     
-all_array = np.genfromtxt(inputfile, names=True)
+#all_array = np.genfromtxt(inputfile, names=True)
 #times= Time(all_array['mjd'], format='mjd')
 #times= np.copy(all_array['mjd'])
-times= np.copy(all_array['bmjd_tdb'])
+#times= np.copy(all_array['bmjd_tdb'])
 fluxes= np.copy(all_array['flux'])
 
 times= (times - times[0]) *time_converter

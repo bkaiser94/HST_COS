@@ -51,20 +51,37 @@ def make_output_name(path1, path2):
     
 
 def lightcurve_divide(path1, path2):
-    all1= np.genfromtxt(path1, names= True)
-    print(np.genfromtxt(path1,skip_header = 0)[0])
-    all2= np.genfromtxt(path2, names = True)
+    try:
+        all1= np.genfromtxt(path1, names= True, skip_header=1)
+        time_s= np.genfromtxt(path1, skip_header=1).T[3] #I don't know why I can't successfully extract the header but I can't
+        bmjd_array = all1['bmjd_tdb']
+    except ValueError as error:
+        print("ValueError:",error)
+        print("probably due to this lightcurve being before the addition of comments,\nso now we won't skip any lines.")
+        all1= np.genfromtxt(path1, names= True)
+        time_s= np.genfromtxt(path1).T[3] #I don't know why I can't successfully extract the header but I can't
+        bmjd_array = all1['bmjd_tdb']
+    try:
+        all2= np.genfromtxt(path2, names = True, skip_header=1)
+        lc2= all2['flux']+1
+    except ValueError as error:
+        print("ValueError:",error)
+        print("probably due to this lightcurve being before the addition of comments,\nso now we won't skip any lines.")
+        all2= np.genfromtxt(path2, names = True)
+        lc2= all2['flux']+1
+    #print(np.genfromtxt(path1,skip_header = 0)[0])
+    #all2= np.genfromtxt(path2, names = True)
     #print(all1)
     bmjd_array = all1['bmjd_tdb']
     #time_s = all1['time(s)(bmjd_t']
-    time_s= np.genfromtxt(path1).T[3] #I don't know why I can't successfully extract the header but I can't
+    #time_s= np.genfromtxt(path1).T[3] #I don't know why I can't successfully extract the header but I can't
     print ("WARNING!")
     print ("For whatever reason, np.genfromtxt can't recognize 'time(s)(bmjd_tdb)' as the header,")
     print ("so we're just going off indices. If you've changed any of the text file layouts, this could")
     print ("be bad. If the numbers printed below vaguely correspond to your timestep, you should")
     print ("be good.")
     lc1= all1['flux']+1
-    lc2= all2['flux']+1
+    #lc2= all2['flux']+1
     div_curve = lc1/lc2-1
     #print(all1.shape)
     #print(all1[0])

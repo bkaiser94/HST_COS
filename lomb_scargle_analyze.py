@@ -19,10 +19,18 @@ import lightcurve as lc
 second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 inputfile= sys.argv[1]
 num_freq = 100000
+try:
+    all_array = np.genfromtxt(inputfile, names=True, skip_header=1)
+    times= np.copy(all_array['bmjd_tdb'])
+except ValueError as error:
+    print("ValueError:",error)
+    print("probably due to this lightcurve being before the addition of comments,\nso now we won't skip any lines.")
+    all_array = np.genfromtxt(inputfile, names=True)
+    times= np.copy(all_array['bmjd_tdb'])
 
-all_array = np.genfromtxt(inputfile, names=True)
+#all_array = np.genfromtxt(inputfile, names=True)
 #times= Time(all_array['mjd'], format='mjd')
-times= np.copy(all_array['bmjd_tdb'])
+#times= np.copy(all_array['bmjd_tdb'])
 times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 #times = (times- times[0]) #rezeroing the time of observation.
 
@@ -32,7 +40,8 @@ times = (times- times[0])*second_per_mjd #rezeroing the time of observation.
 #period_range = np.array([10,20]) #hours
 #period_range= [100, 1400] #seconds
 #period_range= [70., 1400.]
-period_range= [2*second_per_mjd, 4000*second_per_mjd]
+#period_range= [2*second_per_mjd, 4000*second_per_mjd]
+period_range=[2,2000]
 #period_range= [ 5.00001,2000.]
 #period_range = [70.,190.]
 #period_range= period_range *3600. #seconds

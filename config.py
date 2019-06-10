@@ -4,14 +4,15 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 """
 #from astropy.time import Time
 #booleans for whether or not to actually do the masking of the different lines
-do_lyman = True #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
-do_oxygen= True  #smaller mask when False (good for G130M setup); actually it's currenlty (2018-11-04) a non-mask
-do_nitrogen= True
+#do_lyman = False #this one just does a much smaller mask when disabled. (It would be the only thing plotted otherwise)
+#do_oxygen= False  #smaller mask when False (good for G130M setup); actually it's currenlty (2018-11-04) a non-mask
+#do_nitrogen= False
 
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
-lyman_deg = 1
-oxygen_deg = 1
-nitrogen_deg = 1
+mask_deg=1
+#lyman_deg = 1
+#oxygen_deg = 1
+#nitrogen_deg = 1
 
 cos_refresh_rate = 0.032 #seconds
 lpos_list= [56132, 57063, 58028] #mjd dates of lifetime position changes (added LP-POS 4)
@@ -38,27 +39,31 @@ lyman_mask_list = [
 
 oxygen_mask_list= [
     [0,0],
-    [1301,1307],
+    [1301,1308],
     [1295,1313]]
 
 nitrogen_mask_list = [
     [0,0],
-    [1195,1207],
+    [1198,1202],
     [1195,1207]]
 
-if do_lyman:
-    lyman_mask= [1206, 1226]
-else:
-    lyman_mask= [1214, 1217]
-if do_oxygen:
-    oxygen_mask= [1295, 1313] #airglow wavelengths to be filtered according to lightcurve
-else:
-    oxygen_mask= [1306,1306]
-if do_nitrogen:
-    nitrogen_mask= [1195, 1207] #hopefully this helps the dimmer targets... hopefully
-else:
-    #nitrogen_mask= [1200,1200]
-    nitrogen_mask=[0,0]
+#if do_lyman:
+    #lyman_mask= [1206, 1226]
+#else:
+    #lyman_mask= [1214, 1217]
+#if do_oxygen:
+    #oxygen_mask= [1295, 1313] #airglow wavelengths to be filtered according to lightcurve
+#else:
+    #oxygen_mask= [1306,1306]
+#if do_nitrogen:
+    #nitrogen_mask= [1195, 1207] #hopefully this helps the dimmer targets... hopefully
+#else:
+    ##nitrogen_mask= [1200,1200]
+    #nitrogen_mask=[0,0]
+    
+lyman_mask= lyman_mask_list[mask_deg]
+oxygen_mask= oxygen_mask_list[mask_deg]
+nitrogen_mask= nitrogen_mask_list[mask_deg]
 
 
 silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309] #silicon lines in the UV
