@@ -9,12 +9,14 @@ import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.time import Time
 import sys
-import config
+import csv
 
 #from calcos import calcos
 from costools import timefilter
 import local_lightcurve as lc
 import spec_plot_tools as spt
+import config
+
 
 #from plot_all_lightcurve import gain_change_list_mjd, lpos_list
 
@@ -44,6 +46,17 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
 
    
     counter= 0
+    #get the mask degree used for the light curve to produce the overhead spectrum
+    with open(lcfile, 'rb') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            print('reading row')
+            row= row[0]
+            mask_deg= int(row.split('=')[1])
+            print('mask_deg:', mask_deg)
+            break
+    
+    #mask_deg= 1
     for dataset in glob(target_dir+ '/*x1dsum.fits'):
         hdu = fits.open(dataset)
         cenwave=str(hdu[0].header['CENWAVE'])
@@ -67,7 +80,8 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #print("fluxes",  fluxes)
         arrshape= wavelengths.shape
         target_spec= np.vstack([wavelengths, fluxes])
-        mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] +[seg_gap]#need to add the segment gap in the future
+        mask_list= [config.lyman_mask_list[mask_deg]]+[config.oxygen_mask_list[mask_deg]]+[config.nitrogen_mask_list[mask_deg]] +[seg_gap]
+        #mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] +[seg_gap]
         cleaned_spec = spt.clean_spectrum(target_spec, wave_min, wave_max, mask_list)
         wavelengths= cleaned_spec[0]
         fluxes= cleaned_spec[1]

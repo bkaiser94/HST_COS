@@ -37,8 +37,10 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
 
     gross_array = np.array([])
     flux_table = np.array([])
-
-
+    bkg_array=np.array([])
+    count_array=np.array([])
+    error_array=np.array([])
+    ferror_array=np.array([])
     negative_flux_files= []
     negative_means= []
     if plotall:
@@ -55,6 +57,10 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
         mjd_array= np.append(mjd_array, astrotable['mjd'])
         gross_array= np.append(gross_array, astrotable['gross'])
         flux_table= np.append(flux_table, astrotable["flux"]) #for complete dataset mean normalization
+        bkg_array=np.append(bkg_array, astrotable['background'])
+        count_array=np.append(count_array, astrotable['gross']-astrotable['background'])
+        error_array=np.append(error_array, np.sqrt(astrotable['gross']+astrotable['background']))
+        ferror_array= np.append(ferror_array, np.sqrt(astrotable['gross'] + astrotable['background']) / (astrotable['gross'] - astrotable['background']) * astrotable['flux'])
         #flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmedian(astrotable['flux'])-1)) #for individual fits file median normalization
         #flux_table= np.append(flux_table, (astrotable["flux"]/np.nanmean(astrotable['flux'])-1)) #for individual fits file mean normalization
         print("first mjd: " , astrotable['mjd'][0])
@@ -78,6 +84,10 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
 
 
     pre_flux = np.copy(flux_table)
+    ferror_array= np.copy(ferror_array/flux_table) #normalizing the error to the flux values to whatever units flux happens to be in at a given time
+    norm_ferror_array= np.copy(ferror_array*(flux_table/np.nanmean(flux_table))) #making the flux error array be in scaled units to the normalized flux that's about to be calculated
+    #it had to be done without subtracting 1 because then you'd have negative values for the errors inexplicably
+    #this is also why it couldn't be left in arbitrary units because it would later be multiplied by the negative flux values
     flux_array = np.copy( flux_table/np.nanmean(flux_table)-1.) #normalize flux array around zero #This was the mean all norming method
     #flux_array = np.copy(flux_table) #this should be uncommented for the individual fits normalization
     #flux_array= np.copy(flux_table/np.nanmedian(flux_table)-1.) #New version as of 2017-11-30
@@ -123,7 +133,7 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
         #plt.show()
 
         plt.title('normed')
-        plt.hist(flux_array, bins = 70)
+        plt.hist(flux_array, bins = 200)
         plt.show()
 
         plt.title('not normed')
@@ -149,7 +159,8 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     print("max time correction: ", np.max(np.abs(ltt_bary)))
     bmjd_array= (time_mjd.tdb + ltt_bary).tdb.mjd #barycentric correction
     time_sec= (bmjd_array- bmjd_array[0])*second_per_mjd #This should correctly output the seconds times in the BMJD_tdb version
-    textheader= 'mjd\tgross\tflux\ttime(s)(bmjd_tdb)\tbmjd_tdb'
+    #textheader= 'mjd\tgross\tflux\ttime(s)(bmjd_tdb)\tbmjd_tdb'
+    textheader= 'mjd\tgross\tflux\ttime(s)(bmjd_tdb)\tbmjd_tdb\tbackground\tcounts\terror\tflux_error'
     comment_string= 'mask_deg='+str(config.mask_deg) #20190610
     textheader=comment_string+'\n' + textheader #20190610
     #textcomment= 'step = ' + str(stepsize)
@@ -163,6 +174,11 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     out_array = np.append(out_array, [flux_array], axis = 0)
     out_array = np.append(out_array, [time_sec], axis=0)
     out_array= np.append(out_array, [bmjd_array], axis=0)
+    out_array= np.append(out_array, [bkg_array], axis=0)
+    out_array= np.append(out_array, [count_array], axis=0)
+    out_array= np.append(out_array, [error_array], axis=0)
+    out_array= np.append(out_array, [norm_ferror_array], axis=0)
+
     print(out_array.shape)
     out_array= out_array.T
     print(out_array.shape)
