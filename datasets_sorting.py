@@ -133,7 +133,7 @@ for row in info_table:
 dirs_for_eval= np.array(dirs_for_eval)
 print('dirs_for_eval', dirs_for_eval)
 print('saving', targeting_file)
-np.savetxt(targeting_file, dirs_for_eval)
+np.savetxt(targeting_file, dirs_for_eval,fmt='%.40s)
 print(targeting_file, 'saved.')
 
 
