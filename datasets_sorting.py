@@ -90,6 +90,7 @@ def move_fileset(input_row):
         print('dest_filename', dest_filename)
         full_dest= home_dir+dest_dir+dest_filename
         print('moving', origin, ' to ', full_dest)
+        os.rename(origin, full_dest)
     return
 
 ###############################
