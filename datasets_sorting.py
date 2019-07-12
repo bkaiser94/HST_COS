@@ -75,7 +75,7 @@ def get_files_associated(input_row):
     for entry in coll_files:
         entry= home_dir+entry
         print('entry', entry)
-        fixed_coll_files.append([entry])
+        fixed_coll_files.append(entry)
     print('fixed_coll_files', fixed_coll_files)
     return fixed_coll_files
 
