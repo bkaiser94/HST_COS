@@ -32,7 +32,11 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
 
     for dataset in glob(target_dir+ '/*x1d.fits'):
         hdu = fits.open(dataset)
-        print(dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME'], "LP-POS: ", hdu[0].header['LIFE_ADJ'], "FP-POS: ", hdu[0].header['FPPOS'])
+        try:
+            print(dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME'], "LP-POS: ", hdu[0].header['LIFE_ADJ'], "FP-POS: ", hdu[0].header['FPPOS'])
+        except KeyError as error:
+            print('KeyError:', error)
+            print(dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME'], "LP-POS: ", "FP-POS: ", hdu[0].header['FPPOS'])
 
     fig = plt.figure(figsize=(200,9))
     #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
