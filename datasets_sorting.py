@@ -23,7 +23,7 @@ import csv
 
 import config
 
-home_dir= os.getenv('HOME')+'/'
+home_dir= os.getcwd()+'/'
 
 info_file= 'SNAP_done_smaller.csv'
 massive_dir= '2retrieval/' #directory that contains the datasets that need to be sorted into the other directories
