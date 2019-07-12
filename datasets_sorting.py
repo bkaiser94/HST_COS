@@ -75,12 +75,14 @@ def get_files_associated(input_row):
     for entry in coll_files:
         entry= home_dir+entry
         print('entry', entry)
-    print('fixed_coll_files')
+    print('fixed_coll_files', fixed_coll_files)
     return fixed_coll_files
 
 def move_fileset(input_row):
     coll_files= get_files_associated(input_row)
     dest_dir= check_directory(row)
+    print('about to iterate through coll_files in move_fileset()')
+    print('coll_files', coll_files)
     for origin in coll_files:
         parts = origin.split('/')
         dest_filename= parts[-1]
