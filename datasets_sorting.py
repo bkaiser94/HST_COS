@@ -23,7 +23,7 @@ import csv
 
 import config
 
-
+home_dir= os.getenv('HOME')
 
 info_file= 'SNAP_done.csv'
 massive_dir= '2retrieval/' #directory that contains the datasets that need to be sorted into the other directories
@@ -63,16 +63,26 @@ def check_directory(input_row):
         pass
     return dest_dir
 
-def get_files_associated(file_association):
+def get_files_associated(input_row):
+    file_association= input_row['File']
     core_assoc= file_association[:6]
     print('core_assoc', core_assoc)
-    search_string= massive_dir+core_assoc+'*.fits'
+    search_string= home_dir+massive_dir+core_assoc+'*.fits'
     print('search_string', search_string)
     coll_files= glob(search_string)
     print('coll_files', coll_files)
+    return coll_files
+
+def move_fileset(input_row):
+    coll_files= get_files_associated(input_row)
+    dest_dir= check_directory(row)
+    for origin in coll_files:
+        parts = origin.split('/')
+        dest_filename= parts[-1]
+        print('dest_filename', dest_filename)
+        full_dest= home_dir+dest_dir+dest_filename
+        print('moving', origin, ' to ', full_dest)
     return
-
-
 
 ###############################
 
@@ -108,7 +118,9 @@ for row in info_table:
     dest_dir= check_directory(row)
     print('output dest_dir', dest_dir)
     dirs_for_eval.append([dest_dir])
-    get_files_associated(row['File'])
+    #get_files_associated(input_row)
+    move_files(row)
+    
     
 print('saving', targeting_file)
 np.savetxt(targeting_file, dirs_for_eval, overwrite=True)
