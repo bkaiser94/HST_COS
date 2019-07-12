@@ -25,7 +25,7 @@ import config
 
 home_dir= os.getenv('HOME')
 
-info_file= 'SNAP_done.csv'
+info_file= 'SNAP_done_smaller.csv'
 massive_dir= '2retrieval/' #directory that contains the datasets that need to be sorted into the other directories
 targeting_file = 'targets_for_lc.txt' #filename for the collected directories to be evaluated by lazy_step_grid.py
 #all_array=np.genfromtxt(info_file, delimiter='/t', names=True).T
