@@ -67,11 +67,16 @@ def get_files_associated(input_row):
     file_association= input_row['File']
     core_assoc= file_association[:6]
     print('core_assoc', core_assoc)
-    search_string= home_dir+massive_dir+core_assoc+'*.fits'
+    search_string= massive_dir+core_assoc+'*.fits'
     print('search_string', search_string)
     coll_files= glob(search_string)
     print('coll_files', coll_files)
-    return coll_files
+    fixed_coll_files= []
+    for entry in coll_files:
+        entry= home_dir+entry
+        print('entry', entry)
+    print('fixed_coll_files')
+    return fixed_coll_files
 
 def move_fileset(input_row):
     coll_files= get_files_associated(input_row)
