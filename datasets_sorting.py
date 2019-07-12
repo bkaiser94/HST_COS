@@ -119,7 +119,7 @@ for row in info_table:
     print('output dest_dir', dest_dir)
     dirs_for_eval.append([dest_dir])
     #get_files_associated(input_row)
-    move_files(row)
+    move_fileset(row)
     
     
 print('saving', targeting_file)
