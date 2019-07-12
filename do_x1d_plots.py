@@ -63,8 +63,8 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
         cleaned_spec = spt.clean_spectrum(target_spec, wave_min, wave_max, mask_list)
         fluxes= cleaned_spec[1]
         wavelengths= cleaned_spec[0]
-        print("fluxes.shape: ", fluxes.shape)
-        print("wavelengths.shape" , wavelengths.shape)
+        #print("fluxes.shape: ", fluxes.shape)
+        #print("wavelengths.shape" , wavelengths.shape)
         
         if counter == 0:
             flux_all= np.array([np.zeros(fluxes.shape)])
