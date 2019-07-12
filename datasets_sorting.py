@@ -107,7 +107,7 @@ for row in info_table:
     #make_dir_name(row)
     dest_dir= check_directory(row)
     print('output dest_dir', dest_dir)
-    dirs_for_eval=dirs_for_eval.append([dest_dir])
+    dirs_for_eval.append([dest_dir])
     get_files_associated(row['File'])
     
 print('saving', targeting_file)
