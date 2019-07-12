@@ -130,6 +130,7 @@ for row in info_table:
     move_fileset(row)
     
     
+print('dirs_for_eval', dirs_for_eval)
 print('saving', targeting_file)
 np.savetxt(targeting_file, dirs_for_eval)
 print(targeting_file, 'saved.')
