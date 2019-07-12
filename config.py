@@ -9,7 +9,7 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 #do_nitrogen= False
 
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
-mask_deg=2
+mask_deg=1
 #lyman_deg = 1
 #oxygen_deg = 1
 #nitrogen_deg = 1
