@@ -123,7 +123,7 @@ for row in info_table:
     
     
 print('saving', targeting_file)
-np.savetxt(targeting_file, dirs_for_eval, overwrite=True)
+np.savetxt(targeting_file, dirs_for_eval)
 print(targeting_file, 'saved.')
 
 
