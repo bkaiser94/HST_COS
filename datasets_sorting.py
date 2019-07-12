@@ -56,7 +56,7 @@ def make_dir_name(input_row):
 def get_files_associated(file_association):
     core_assoc= file_association[:6]
     print('core_assoc', core_assoc)
-    coll_files= glob(massive_dir+core_assoc)
+    coll_files= glob(massive_dir+core_assoc+'*.fits')
     print('coll_files', coll_files)
     return
 
