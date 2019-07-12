@@ -111,7 +111,7 @@ for row in info_table:
     get_files_associated(row['File'])
     
 print('saving', targeting_file)
-np(targeting_file, dirs_for_eval, overwrite=True)
+np.savetxt(targeting_file, dirs_for_eval, overwrite=True)
 print(targeting_file, 'saved.')
 
 
