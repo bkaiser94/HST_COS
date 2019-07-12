@@ -33,6 +33,8 @@ targeting_file = 'targets_for_lc.txt' #filename for the collected directories to
 #all_array= np.genfromtxt(info_file, delimiter=',', names=True, dtype='S32')
 #print(all_array['Grating'])
 
+
+
 #############################
 replacement_list=[
     ['+', 'p'],
@@ -40,7 +42,7 @@ replacement_list=[
     ]
 
 
-
+#################################
 def make_dir_name(input_row):
     wd_name = str(row['Target Name'])
     grating= str(row['Grating'])
@@ -53,6 +55,14 @@ def make_dir_name(input_row):
     print('dir_name:', dir_name)
     return dir_name
 
+def check_directory(input_row):
+    dest_dir= make_dir_name(input_row)
+    if not os.path.exists(dest_dir):
+                os.makedirs(dest_dir)
+    else:
+        pass
+    return dest_dir
+
 def get_files_associated(file_association):
     core_assoc= file_association[:6]
     print('core_assoc', core_assoc)
@@ -63,10 +73,12 @@ def get_files_associated(file_association):
     return
 
 
+
 ###############################
 
 counter=0
 collected_lists= []
+dirs_for_eval=[]
 with open(info_file, 'rb') as csvfile:
     reader= csv.reader(csvfile, delimiter=',')
     for row in reader:
@@ -92,7 +104,13 @@ info_table= Table(info_array, names=names_tuple)
 info_table.pprint()
 
 for row in info_table:
-    make_dir_name(row)
+    #make_dir_name(row)
+    dest_dir= check_directory(row)
+    dirs_for_eval=dirs_for_eval.append(dest_dir)
     get_files_associated(row['File'])
+    
+print('saving', targeting_file)
+np(targeting_file, dirs_for_eval, overwrite=True)
+print(targeting_file, 'saved.')
 
 
