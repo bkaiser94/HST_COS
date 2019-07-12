@@ -129,7 +129,8 @@ for row in info_table:
     #get_files_associated(input_row)
     move_fileset(row)
     
-    
+
+dirs_for_eval= np.array(dirs_for_eval)
 print('dirs_for_eval', dirs_for_eval)
 print('saving', targeting_file)
 np.savetxt(targeting_file, dirs_for_eval)
