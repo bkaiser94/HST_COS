@@ -39,10 +39,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     for dataset in glob(target_dir+ '/*x1dsum.fits'):
         hdu = fits.open(dataset)
         print(dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME'])
-
-    fig = plt.figure(figsize=(20,9))
-    #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
-    ax1 = fig.add_subplot(2,1,1)
+    
+    #moved 2019-07-15
+    #fig = plt.figure(figsize=(20,9)) 
+    ##silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
+    #ax1 = fig.add_subplot(2,1,1)
 
    
     counter= 0
@@ -113,6 +114,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
     #for this_line in config.silicon_lines:
         #ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
     try:
+        #moved here 2019-07-15
+        fig = plt.figure(figsize=(20,9))
+        #silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309]
+        ax1 = fig.add_subplot(2,1,1)
+        ##########################
         for this_line in config.silicon_lines:
             if ((this_line >= wave_min) & (this_line <= wave_max)):
                 ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
@@ -221,7 +227,10 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #plt.show()
 
         #fig.savefig(dest_dir+ target_dir + '_dual_plot_fold_'+ str(period) + unit_arg+'_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
+        print('saving')
         fig.savefig(dest_dir+ target_dir + '_dual_plot_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
+        print('saved')
+        plt.close(fig) #close the figure so we don't have memory usage get out of hand
         return ''
     except UnboundLocalError as error:
         print(error)
