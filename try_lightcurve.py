@@ -22,7 +22,7 @@ import config
 second_per_mjd= 1./1.15741e-5     #SECOND_PER_MJD value from lightcurve.cos.extract, but I couldn't import it for whatever reason... so I just copied and pasted
 start_dir = os.getcwd()
 print("start_dir: ", start_dir)
-def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
+def make_lightcurve(target_dir, stepsize, wlim, plotall=True, detector='FUV'):
     """
     """
     print("")
@@ -31,7 +31,12 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True):
     print("plotall=", plotall)
     print("target_dir: ", target_dir)
     #wlim= [1130, 1900] #3200 is the default max from what I could gather as is 915. The geocoronal emission lines are automatically excluded from the lightcurve
-    band= '_a' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available (the '*' option actually causes cos.py to double-count bands)
+    if detector=='FUV':
+        band= '_a' #should be '_a', '_b', '' for the combined band images, or  '*' to get all bands available (the '*' option actually causes cos.py to double-count bands)
+    elif detector=='NUV':
+        band=''
+    else:
+        print("Apparently there's not a detector header...or it didn't make it into make_lightcurve()...")
 
     mjd_array = np.array([])
 

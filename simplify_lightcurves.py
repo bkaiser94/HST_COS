@@ -41,6 +41,11 @@ wanted_headers= [
     'flux',
     'flux_error'
     ]
+#wanted_headers= [
+    #'time_seconds',
+    #'counts_normed',
+    #'error_normed'
+    #]
 delimiter= '\t'
 
 output_header=delimiter.join(wanted_headers)
@@ -56,6 +61,17 @@ def simplify_lightcurve(input_filename):
     time_seconds=all_array['timesbmjd_tdb']
     flux= all_array['flux']
     flux_error=all_array['flux_error']
+    
+    #flux= np.copy(all_array['counts'])
+    #flux_error=np.copy(all_array['error'])
+    #flux_error=flux_error/flux
+    #flux_error=np.copy(flux_error*(flux/np.nanmean(flux)))
+    #flux= np.copy(flux/np.nanmean(flux)-1.)
+    
+    
+    
+    
+    
     output_array=np.vstack([time_seconds, flux, flux_error])
     output_array= output_array.T
     full_header= 'initial bmjd_tdb:' +str(start_bmjd)+'\n'+output_header

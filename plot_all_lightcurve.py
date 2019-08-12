@@ -59,9 +59,11 @@ def plot_stuff(inputfile):
     #times= Time(all_array['mjd'], format='mjd')
     #times= np.copy(all_array['bmjd_tdb'])
     fluxes= np.copy(all_array['flux'])
+    #fluxes= np.copy(all_array['counts'])
     try:
         gross = np.copy(all_array['gross']) #approximate poisson noise of the plot.
         flux_err = np.sqrt(gross)/gross
+        #flux_err = np.sqrt(gross)
     except ValueError as error:
         print(error)
         print("Flux uncertainties wrong")

@@ -34,6 +34,7 @@ def get_wave_limits(target_dir):
     hdu = fits.open(checked_file)
     grating= hdu[0].header['OPT_ELEM']
     center_wave= hdu[0].header['CENWAVE']
+    detector= hdu[0].header['DETECTOR']
     if grating == "G130M":
         if center_wave == 1291:
             list_limits= config.G130M_1291A_wave_list
@@ -55,12 +56,15 @@ def get_wave_limits(target_dir):
             list_limits = config.G160M_1600A_wave_list
         if center_wave == 1577:
             list_limits= config.G160M_1577A_wave_list
-    return list_limits
+    elif grating =='G230L':
+        if center_wave==2950:
+            list_limits=config.G230L_2950A_wave_list
+    return list_limits, detector
 
 
 def run_step_grid(target_dir):
     try:
-        list_limits = get_wave_limits(target_dir)
+        list_limits, detector = get_wave_limits(target_dir)
         for wave_limit in list_limits:
             #try:
                 #outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
@@ -70,7 +74,7 @@ def run_step_grid(target_dir):
                 #print ("******************************\n")
             for stepsize in step_grid:
                 try:
-                    outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False)
+                    outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False, detector=detector)
                 except IndexError as error:
                     print("\n******************************")
                     print(error)

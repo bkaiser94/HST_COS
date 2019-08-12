@@ -9,10 +9,13 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 #do_nitrogen= False
 
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
-mask_deg=2
+mask_deg=1
 #lyman_deg = 1
 #oxygen_deg = 1
 #nitrogen_deg = 1
+
+
+
 
 cos_refresh_rate = 0.032 #seconds
 lpos_list= [56132, 57063, 58028] #mjd dates of lifetime position changes (added LP-POS 4)
@@ -29,7 +32,10 @@ G130M_1309A_wave_list = [[1162,1286],[1318,1442],[1162,1442],[1250,1271], [1162,
 G130M_1327A_wave_list= [[1182,1307],[1335,1460],[1182,1460]] 
 G140L_1105A_wave_list= [[1180,1300],[1300,1500],[1500,1700],[1180,1800]]
 G130M_1096A_wave_list= [[955, 1075],[1106,1232], [955,1232]]
-wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list + G160M_1577A_wave_list+G130M_1327A_wave_list+G130M_1309A_wave_list+G130M_1222A_wave_list
+G230L_2950A_wave_list=[[1715,3118],[1715,1922],[2805,3118]]
+
+
+wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list + G160M_1577A_wave_list+G130M_1327A_wave_list+G130M_1309A_wave_list+G130M_1222A_wave_list+G230L_2950A_wave_list
 
 
 lyman_mask_list = [
@@ -85,4 +91,7 @@ seg_gap_dict={'G130M':{
     '1327':[1307,1335]},
              'G140L':{'1105': [1179,1180]}, 
              'G160M': {'1600': [1569,1619],
-                       '1577': [1557,1578]}}
+                       '1577': [1557,1578]},
+             'G230L':{
+                 '2950':[1922,2805]}
+             }

@@ -242,10 +242,13 @@ if __name__ == '__main__':
     target_dir= sys.argv[1]
     #lcfile= sys.argv[2]
     stepsize = int(sys.argv[2])
+    wave_min=int(sys.argv[3])
+    wave_max=int(sys.argv[4])
+    wave_lim=[wave_min, wave_max]
     #period= float(sys.argv[3])
     #unit_arg = sys.argv[4]
     #nullstring = make_dual_plots(target_dir, stepsize, period, unit_arg)
-    nullstring = make_dual_plots(target_dir, stepsize)
+    nullstring = make_dual_plots(target_dir, stepsize, wave_limits=wave_lim)
 
 
 
