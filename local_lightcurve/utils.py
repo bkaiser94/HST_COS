@@ -1,6 +1,9 @@
 """General purpose utility functions"""
 
 import os
+import sys
+sys.path.append('../')
+import config
 
 __all__ = ['expand_refname',
            'enlarge',
@@ -30,7 +33,8 @@ def expand_refname(refname):
             reffile = os.path.join(os.environ[refpath], reffile)
         except KeyError:
             refpath, reffile = refname.split('$')
-            refpath = 'HST_COS_ref_files/'
+            #refpath = 'HST_COS_ref_files/'
+            refpath= config.refpath
             reffile= refpath+reffile
             pass
 
