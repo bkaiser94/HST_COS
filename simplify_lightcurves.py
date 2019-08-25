@@ -36,16 +36,16 @@ filename_string= '*lightcurve*.txt'
 
 
 filenames = glob(filename_string)
-#wanted_headers= [
-    #'time_seconds',
-    #'flux',
-    #'flux_error'
-    #]
 wanted_headers= [
     'time_seconds',
-    'counts_normed',
-    'error_normed'
+    'flux',
+    'flux_error'
     ]
+#wanted_headers= [
+    #'time_seconds',
+    #'counts_normed',
+    #'error_normed'
+    #]
 delimiter= '\t'
 
 output_header=delimiter.join(wanted_headers)

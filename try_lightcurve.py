@@ -198,7 +198,7 @@ def make_lightcurve(target_dir, stepsize, wlim, plotall=True, detector='FUV'):
 #Check if this is being executed alone
 if __name__ == '__main__':
     target_dir = sys.argv[1] + '/'
-    stepsize = float(sys.argv[2]) #still not sure what that actually means. Is it in seconds?
+    stepsize = float(sys.argv[2]) #still not sure what that actually means. 
     #wlim= [1130, 1900] 
     lowerlim= int(sys.argv[3])
     upperlim= int(sys.argv[4])
