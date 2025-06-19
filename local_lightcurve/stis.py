@@ -260,14 +260,22 @@ def stis_corrtag(tagfile, clean=True):
     wave_col = fits.Column('wavelength', 'D', 'angstrom', array=wave_data)
     dq_col = fits.Column('dq', 'I', 'DQ', array=dq_data)
 
-    tab = fits.new_table([time_col,
-                            rawx_col,
-                            rawy_col,
-                            xcorr_col,
-                            ycorr_col,
-                            epsilon_col,
-                            wave_col,
-                            dq_col])
+    #tab = fits.new_table([time_col,
+                            #rawx_col,
+                            #rawy_col,
+                            #xcorr_col,
+                            #ycorr_col,
+                            #epsilon_col,
+                            #wave_col,
+                            #dq_col]) #This new_table function was deprecated awhile ago.
+    tab = fits.BinTableHDU.from_columns([time_col,
+                        rawx_col,
+                        rawy_col,
+                        xcorr_col,
+                        ycorr_col,
+                        epsilon_col,
+                        wave_col,
+                        dq_col]) 
     hdu_out.append(tab)
 
     hdu_out[1].header.extend(header1, end=True)

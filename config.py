@@ -3,10 +3,10 @@ File to contain values and data that I'm going to be calling in multiple files, 
 local_lightcurve.cos.py does actually look here now for the masking values, so no need to update anywhere other than here (unless you already made the lightcurves before updating this file.)
 """
 
-refpath= 'HST_COS_ref_files/' #path to be used by local_lightcurve/utils.py for expand_refname()
-
+#refpath= 'HST_COS_ref_files/' #path to be used by local_lightcurve/utils.py for expand_refname()
+refpath='/Users/BenKaiser/Desktop/HST_COS/HST_COS_ref_files/' #Contains the reference files for both STIS and COS
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
-mask_deg=1
+mask_deg=2
 
 
 
@@ -31,6 +31,16 @@ G230L_2950A_wave_list=[[1715,3118],[1715,1922],[2805,3118]]
 
 
 wave_limit_list= G160M_1600A_wave_list+G130M_1291A_wave_list+ G130M_1300A_wave_list + G140L_1105A_wave_list+G130M_1096A_wave_list + G160M_1577A_wave_list+G130M_1327A_wave_list+G130M_1309A_wave_list+G130M_1222A_wave_list+G230L_2950A_wave_list
+
+
+
+stis_dict={
+    '':''
+    
+    
+    
+    
+    }
 
 
 lyman_mask_list = [

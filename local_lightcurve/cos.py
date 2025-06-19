@@ -410,27 +410,70 @@ def extract_index(hdu, x_start, x_end,
                            #(hdu[1].data['WAVELENGTH'] < nitrogen[0]))
                           #)[0]
 
-    data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
-                          (hdu[1].data['XCORR'] < x_end) &
+    #data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
+                          #(hdu[1].data['XCORR'] < x_end) &
 
-                          (hdu[1].data['YCORR'] >= y_start) &
-                          (hdu[1].data['YCORR'] < y_end) &
+                          #(hdu[1].data['YCORR'] >= y_start) &
+                          #(hdu[1].data['YCORR'] < y_end) &
 
-                          np.logical_not(hdu[1].data['DQ'] & sdqflags) &
+                          #np.logical_not(hdu[1].data['DQ'] & sdqflags) &
 
-                          ((hdu[1].data['WAVELENGTH'] > w_start) &
-                           (hdu[1].data['WAVELENGTH'] < w_end)) &
+                          #((hdu[1].data['WAVELENGTH'] > w_start) &
+                           #(hdu[1].data['WAVELENGTH'] < w_end)) &
 
-                          ((hdu[1].data['WAVELENGTH'] > lyman[1])|
-                           (hdu[1].data['WAVELENGTH'] < lyman[0])) &
-                          ((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
-                           (hdu[1].data['WAVELENGTH'] < oxygen[0])) &
-                          ((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
-                           (hdu[1].data['WAVELENGTH'] < nitrogen[0]))&
-                          ((hdu[1].data['WAVELENGTH'] > seg_gap[1])|
-                           (hdu[1].data['WAVELENGTH'] < seg_gap[0]))
-                          )[0]
+                          #((hdu[1].data['WAVELENGTH'] > lyman[1])|
+                           #(hdu[1].data['WAVELENGTH'] < lyman[0])) &
+                          #((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
+                           #(hdu[1].data['WAVELENGTH'] < oxygen[0])) &
+                          #((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
+                           #(hdu[1].data['WAVELENGTH'] < nitrogen[0]))&
+                          #((hdu[1].data['WAVELENGTH'] > seg_gap[1])|
+                           #(hdu[1].data['WAVELENGTH'] < seg_gap[0]))
+                          #)[0]#Commented 20250619
+    try:
+        data_index = np.where((hdu[1].data['XCORR'] >= x_start) &
+                            (hdu[1].data['XCORR'] < x_end) &
 
+                            (hdu[1].data['YCORR'] >= y_start) &
+                            (hdu[1].data['YCORR'] < y_end) &
+
+                            np.logical_not(hdu[1].data['DQ'] & sdqflags) &
+
+                            ((hdu[1].data['WAVELENGTH'] > w_start) &
+                            (hdu[1].data['WAVELENGTH'] < w_end)) &
+
+                            ((hdu[1].data['WAVELENGTH'] > lyman[1])|
+                            (hdu[1].data['WAVELENGTH'] < lyman[0])) &
+                            ((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
+                            (hdu[1].data['WAVELENGTH'] < oxygen[0])) &
+                            ((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
+                            (hdu[1].data['WAVELENGTH'] < nitrogen[0]))&
+                            ((hdu[1].data['WAVELENGTH'] > seg_gap[1])|
+                            (hdu[1].data['WAVELENGTH'] < seg_gap[0]))
+                            )[0]
+    except KeyError as error:
+        print("KeyError:", error)
+        print("Probably using STIS instead")
+        data_index = np.where((hdu[1].data['AXIS1'] >= x_start) &
+                            (hdu[1].data['AXIS1'] < x_end) &
+
+                            (hdu[1].data['AXIS2'] >= y_start) &
+                            (hdu[1].data['AXIS2'] < y_end) &
+
+                            #np.logical_not(hdu[1].data['DQ'] & sdqflags) &
+
+                            ((hdu[1].data['WAVELENGTH'] > w_start) &
+                            (hdu[1].data['WAVELENGTH'] < w_end)) &
+
+                            ((hdu[1].data['WAVELENGTH'] > lyman[1])|
+                            (hdu[1].data['WAVELENGTH'] < lyman[0])) &
+                            ((hdu[1].data['WAVELENGTH'] > oxygen[1]) |
+                            (hdu[1].data['WAVELENGTH'] < oxygen[0])) &
+                            ((hdu[1].data['WAVELENGTH'] > nitrogen[1]) |
+                            (hdu[1].data['WAVELENGTH'] < nitrogen[0]))&
+                            ((hdu[1].data['WAVELENGTH'] > seg_gap[1])|
+                            (hdu[1].data['WAVELENGTH'] < seg_gap[0]))
+                            )[0]
     return data_index
 
 #-------------------------------------------------------------------------------
