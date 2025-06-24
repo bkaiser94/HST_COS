@@ -66,6 +66,7 @@ def run_step_grid(target_dir):
     try:
         list_limits, detector = get_wave_limits(target_dir)
         for wave_limit in list_limits:
+            print('Wave limit:', wave_limit)
             #try:
                 #outstring = tlc.make_lightcurve(target_dir, 1, wave_limit, plotall = False) #one second binning before running the other steps in the grid
             #except IndexError as error:
@@ -73,6 +74,7 @@ def run_step_grid(target_dir):
                 #print (error)
                 #print ("******************************\n")
             for stepsize in step_grid:
+                print('Wave limit:', wave_limit)
                 try:
                     outstring = tlc.make_lightcurve(target_dir, stepsize, wave_limit, plotall = False, detector=detector)
                 except IndexError as error:
@@ -87,4 +89,7 @@ def run_step_grid(target_dir):
 if __name__ == '__main__':
     target_dir = sys.argv[1] + '/'
     run_step_grid(target_dir)
+    print('\n\n************************\n')
+    print('*Step Grid Completed!*')
+    print('\n************************\n\n')
 

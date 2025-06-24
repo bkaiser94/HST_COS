@@ -10,6 +10,7 @@ from astropy.io import fits
 from astropy.time import Time
 import sys
 import csv
+sys.path.append('/Users/BenKaiser/Desktop/radial_velocity_calculations/')
 
 #from calcos import calcos
 from costools import timefilter
@@ -53,8 +54,11 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         for row in reader:
             print('reading row')
             row= row[0]
-            mask_deg= int(row.split('=')[1])
-            print('mask_deg:', mask_deg)
+            try:
+                mask_deg= int(row.split('=')[1])
+                print('mask_deg:', mask_deg)
+            except IndexError:
+                mask_deg=config.mask_deg
             break
     
     #mask_deg= 1
@@ -113,6 +117,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #ax1.plot(wavelengths, fluxes/np.nanmean(fluxes), label=hdu[0].header['rootname'])
     #for this_line in config.silicon_lines:
         #ax1.axvline(x= this_line ,linestyle = '-', color = 'g' , ymin = 0, ymax = 100000, linewidth = 1, alpha = 0.2)
+    print('\n117\n ')
     try:
         #moved here 2019-07-15
         fig = plt.figure(figsize=(20,9))
@@ -160,6 +165,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
             
 
         #all_array = np.genfromtxt(lcfile, names=True)
+        print('line 164')
         try:
             all_array = np.genfromtxt(lcfile, names=True, skip_header=1)
             #times= Time(all_array['mjd'], format='mjd')
@@ -227,7 +233,7 @@ def make_dual_plots(target_dir, stepsize, wave_limits= [1130,1900]):
         #plt.show()
 
         #fig.savefig(dest_dir+ target_dir + '_dual_plot_fold_'+ str(period) + unit_arg+'_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
-        print('saving')
+        print('saving',dest_dir+ target_dir + '_dual_plot_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf')
         fig.savefig(dest_dir+ target_dir + '_dual_plot_step' + str(stepsize)+ '_wlim' + str(wave_min) + ',' + str(wave_max)+'.pdf', bbox_inches = 'tight')
         print('saved')
         plt.close(fig) #close the figure so we don't have memory usage get out of hand

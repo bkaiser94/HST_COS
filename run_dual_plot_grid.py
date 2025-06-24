@@ -9,6 +9,9 @@ import config
 #from run_step_grid import limit_list
 from make_dual_plots import make_dual_plots
 
+sys.path.append('/Users/BenKaiser/Desktop/radial_velocity_calculations/')
+
+
 def run_dual_plot_grid(target_dir, stepsize):
     for limit in config.wave_limit_list:
         #nullstring = make_dual_plots(target_dir, stepsize, period, unit_arg, wave_limits= limit)

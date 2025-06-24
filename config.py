@@ -6,7 +6,7 @@ local_lightcurve.cos.py does actually look here now for the masking values, so n
 #refpath= 'HST_COS_ref_files/' #path to be used by local_lightcurve/utils.py for expand_refname()
 refpath='/Users/BenKaiser/Desktop/HST_COS/HST_COS_ref_files/' #Contains the reference files for both STIS and COS
 #degree of masking level: 0 means no mask, 1 means small mask (usually G130M setting), 2 means large mask (G140L setting)
-mask_deg=2
+mask_deg=1
 
 
 
@@ -18,10 +18,33 @@ lpos_list= [56132, 57063, 58028] #mjd dates of lifetime position changes (added 
 gain_change_list= ['2009-05-11', '2009-08-12', '2011-03-08', '2012-03-26', '2012-07-23', '2013-06-24', '2014-07-21', '2014-11-03', '2015-02-09']
 #gain_change_list_mjd = gain_change_list.mjd
 
+lyman_mask_list = [
+    [0,0],
+    [1214,1217],
+    [1206,1226]]
+
+oxygen_mask_list= [
+    [0,0],
+    [1301,1308],
+    [1295,1313]]
+
+nitrogen_mask_list = [
+    [0,0],
+    [1198,1202],
+    [1195,1207]]
+
+lyman_mask= lyman_mask_list[mask_deg]
+oxygen_mask= oxygen_mask_list[mask_deg]
+nitrogen_mask= nitrogen_mask_list[mask_deg]
+
+
 G160M_1600A_wave_list= [[1452, 1570],[1615,1760],[1452,1760]]
 G160M_1577A_wave_list= [[1387,1557],[1578,1742],[1387,1742]] #Based only on the GW-Librae observation which only included 4 exposures all in FP-POS 3
 G130M_1222A_wave_list = [[1077,1201],[1233,1354],[1077,1354],[1250,1271]]
-G130M_1291A_wave_list=[[1142, 1268],[1298,1422],[1142,1422], [1142,1200],[1250,1268]]
+#G130M_1291A_wave_list=[[1142, 1268],[1298,1422],[1142,1422], [1142,1200],[1250,1268]]
+G130M_1291A_wave_list=[[1142, 1268],[1298,1422],[1142,1422], [1142,1200],[1250,1268],[1354,1360]] #added one for G227-5
+#G130M_1291A_wave_list=[ [1214,1217], [1301,1308], [1198,1202]] #done to track geocoronal emission separately. Need mask deg 0
+
 G130M_1300A_wave_list= [[1250,1271],[1150,1200],[1300,1425],[1150,1425],[1150,1271]]
 G130M_1309A_wave_list = [[1162,1286],[1318,1442],[1162,1442],[1250,1271], [1162,1200]]
 G130M_1327A_wave_list= [[1182,1307],[1335,1460],[1182,1460]] 
@@ -43,24 +66,6 @@ stis_dict={
     }
 
 
-lyman_mask_list = [
-    [0,0],
-    [1214,1217],
-    [1206,1226]]
-
-oxygen_mask_list= [
-    [0,0],
-    [1301,1308],
-    [1295,1313]]
-
-nitrogen_mask_list = [
-    [0,0],
-    [1198,1202],
-    [1195,1207]]
-
-lyman_mask= lyman_mask_list[mask_deg]
-oxygen_mask= oxygen_mask_list[mask_deg]
-nitrogen_mask= nitrogen_mask_list[mask_deg]
 
 
 silicon_lines= [1190, 1193, 1195, 1197, 1207, 1260, 1265, 1304, 1309] #silicon lines in the UV

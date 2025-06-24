@@ -11,6 +11,8 @@ from astropy.time import Time
 import sys
 import config
 
+sys.path.append('/Users/BenKaiser/Desktop/radial_velocity_calculations/')
+
 #from calcos import calcos
 #from costools import timefilter
 import local_lightcurve as lc
@@ -113,7 +115,8 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
         ax1.set_yscale('log')
         #bad_inds = np.where(
     #fig.tight_layout()
-    fig.savefig(target_dir+'x1dtruesum.pdf')
+    #fig.savefig(target_dir+'x1dtruesum.pdf')
+    spt.show_plot(line_id='uv',show_telluric=False)
     plt.show()
     
     

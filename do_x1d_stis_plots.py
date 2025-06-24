@@ -22,7 +22,25 @@ import spec_plot_tools as spt
 
 plt.rc('lines',linewidth=0.5)
 
-fp_pos_colors = ['magenta', 'r', 'g', 'b', 'k']
+fp_pos_colors = ['magenta', 'r', 'g', 'b', 'k','cyan','orange','brown']
+
+target_dir=os.getcwd()
+filepath_list=[
+    'GD356*/*x1d.fits',
+    'G227*/*x1d.fits',
+    'G35m26*/*x1d.fits'
+    
+    
+    ]
+
+filenamelist=[]
+for element in filepath_list:
+    filenamelist=filenamelist+glob(target_dir+'/'+element)
+    
+    
+filenamelist=filenamelist+glob('/Users/BenKaiser/Desktop/HST_COS/G227m5_G130Mc1291A/*x1d.fits')
+
+filenamelist=sorted(filenamelist)
 def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
     wave_min= low_lim
     #lyman = [1208, 1225]
@@ -33,9 +51,17 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
     #dest_dir = 'dual_plots/'
     #if not os.path.exists(dest_dir):
                 #os.makedirs(dest_dir)
-    
+    #filenamelist= sorted(glob(target_dir+ '/GD356*/*x1d.fits'))
+    #for thing in filenamelist:
+        #print(thing)
+    #filenamelist=filenamelist+sorted(glob(target_dir+'/*/*/*x1d.fits'))
+    #filenamelist=filenamelist+sorted(glob(target_dir+'/G227*/*x1d.fits'))
 
-    for dataset in glob(target_dir+ '/*x1d.fits'):
+    for thing in filenamelist:
+        print(thing)
+    for thing in sorted(glob('/*/*/*x1d.fits')):
+        print(thing)
+    for dataset in filenamelist:
         hdu = fits.open(dataset)
         #try:
             #print(dataset, hdu[0].header['OPT_ELEM'], hdu[0].header['CENWAVE'], hdu[1].header['EXPTIME'], "LP-POS: ", hdu[0].header['LIFE_ADJ'], "FP-POS: ", hdu[0].header['FPPOS'])
@@ -53,10 +79,14 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
     mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] #need to add the segment gap (not implemented directly in spec_plot_tools because it will eventually be called from a dict based on grating and central wavelength
     for mask in mask_list:
         plt.axvspan(mask[0],mask[1],alpha=0.1, color='k')
-    for dataset in glob(target_dir+ '/*x1d.fits')[:6]:
+    #for dataset in glob(target_dir+ '/*x1d.fits'):
+    targcount=-1
+    target_name=''
+    for dataset in filenamelist:
         #fig = plt.figure()
         #ax1 = fig.add_subplot(1,1,1)
         hdu = fits.open(dataset)
+        print('dataset',dataset)
         #print(hdu[1])
         #print(hdu[1]['FUVA'])
         #print(hdu[1].data[0])
@@ -77,7 +107,11 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
         target_spec= np.vstack([wavelengths, fluxes])
         #mask_list= [config.lyman_mask]+[config.oxygen_mask]+[config.nitrogen_mask] #need to add the segment gap (not implemented directly in spec_plot_tools because it will eventually be called from a dict based on grating and central wavelength
         #cleaned_spec = spt.clean_spectrum(target_spec, wave_min, wave_max, mask_list)
-        pix_kernel = conv.Box1DKernel(width = int(5), mode = 'oversample')
+        if "COS" in dataset:
+            kern_width=21
+        else:
+            kern_width=5
+        pix_kernel = conv.Box1DKernel(width = int(kern_width), mode = 'oversample')
         pix_kernel.normalize()
         target_spec[1] = conv.convolve(target_spec[1], pix_kernel)
         if np.nanmin(target_spec[0])>1500:
@@ -113,7 +147,25 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
         #print("sum fluxes: ", np.sum(fluxes))
         #ax1.plot(wavelengths, fluxes, label=hdu[1].header['EXPSTART'], color = fppos_color )
         #ax1.plot(wavelengths, fluxes, label=hdu[1].header['EXPSTART'],marker='.', linestyle='None',markersize=2)
-        ax1.plot(wavelengths, fluxes, label=hdu[1].header['EXPSTART'])
+        def make_plot(targcount, target_name):
+            try:
+                if target_name!=hdu[0].header['targname']:
+                    target_name=hdu[0].header['targname']
+                    targcount+=1
+            #ax1.plot(wavelengths, fluxes, label=str(hdu[1].header['EXPSTART'])+','+dataset)
+                ax1.plot(wavelengths, fluxes, label=hdu[0].header['targname']+','+hdu[0].header['tardescr']+','+hdu[0].header['photmode'],color=fp_pos_colors[targcount])
+            except KeyError as error:
+                print("KeyError:",error)
+                ax1.plot(wavelengths, fluxes, label=','.join(dataset.split('/')[-2:]),color=fp_pos_colors[targcount])
+            return targcount, target_name
+        #if hdu[0].header['opt_elem']=='G140L':
+        if "GD356" in dataset:
+            if hdu[0].header['opt_elem']=='G140L':
+                targcount, target_name=make_plot(targcount, target_name)
+            else:
+                pass
+        else:
+           targcount, target_name= make_plot(targcount, target_name)
 
         #ax1.set_ylabel('Flux (cgs)')
         #ax1.set_xlabel('Wavelength $(\AA)$')
@@ -145,11 +197,12 @@ def plot_all_x1d(target_dir, low_lim, high_lim, log_scale):
         #bad_inds = np.where(
     #fig.tight_layout()
     #fig.savefig(target_dir+'x1dtruesum.pdf')
-    plt.show()
+    spt.show_plot(line_id='uv',show_telluric=False,label_pos=1e-15)
+    #plt.show()
     
     
 if __name__ == '__main__':
-    target_dir= sys.argv[1]
+    #target_dir= sys.argv[1]
     #lcfile= sys.argv[2]
     #low_lim = int(sys.argv[2])
     #high_lim = int(sys.argv[3])
